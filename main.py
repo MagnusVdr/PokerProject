@@ -24,6 +24,10 @@ def update_gui(root):
     global cardImage
     cardImage = Image.open("Images/" + pokerCards[card1] + ".png")
     cardImageGUI = ImageTk.PhotoImage(cardImage)
+    # Update the GUI from the main thread using the after method
+    root.after(0, lambda: update_gui_gui(root, cardImageGUI))
+
+def update_gui_gui(root, cardImageGUI):
     cardGUILabel = Label(root, image=cardImageGUI)
     cardGUILabel.place(x=1000, y=0)
 
@@ -176,12 +180,11 @@ pause_button.place(x=1600, y=940)
 
 update_timer()
 
+update_gui(root)
+
 # threadI2C = Thread(target=i2c_thread)
 #
 # threadI2C.start()
-
-threadUpdateGUI = Thread(target=update_gui(root), args=(root, ))
-threadUpdateGUI.start()
 
 # Start GUI main loop
 root.mainloop()
