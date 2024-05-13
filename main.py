@@ -180,7 +180,7 @@ update_timer()
 #
 # threadI2C.start()
 
-threadUpdateGUI = Thread(target=update_gui(root))
+threadUpdateGUI = Thread(target=update_gui(root), args=(root, ))
 threadUpdateGUI.start()
 
 # Start GUI main loop
