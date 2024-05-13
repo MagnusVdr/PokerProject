@@ -67,9 +67,9 @@ def pause_timer():
 
 
 def create_gui(root, screen_width, screen_height):
-    root.overrideredirect(True)
+    # root.overrideredirect(True)
     root.geometry(f"{screen_width}x{screen_height}+0+0")
-    #root.wm_attributes("-topmost", 1)
+    # root.wm_attributes("-topmost", 1)
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
     pokerTableGUI = ImageTk.PhotoImage(pokerTableImage)
