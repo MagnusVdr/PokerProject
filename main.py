@@ -1,6 +1,35 @@
 from tkinter import *
 from PIL import ImageTk, Image
+from threading import Thread
+from time import sleep
+from smbus import SMBus
 from header import *
+
+activePlayerIDs = []
+card1 = 0
+
+def i2c_thread():
+    bus_number = 1
+    bus = SMBus(bus_number)
+    data_to_send = [0x01, 0x00, 0x00, 0x00, 0x00, 0x20]
+    bus.write_i2c_block_data(players_ID[0], 0x00, data_to_send)
+    sleep(5)
+    data_received = bus.read_i2c_block_data(players_ID[0], 0x00, 6)
+    global card1
+    card1 = data_received[0]
+
+
+def update_gui():
+    global card1
+    global cardImage
+    cardImage = Image.open(pokerCards[card1] + ".png")
+    cardImageGUI = ImageTk.PhotoImage(cardImage)
+    cardGUILabel = Label(root, image=cardImageGUI)
+    if card1 == 1:
+        cardGUILabel.place(x=1000, y=0)
+    else:
+        cardGUILabel.place(x=1200, y=0)
+
 
 
 def update_poker_info(level, bb, ante, time):
@@ -150,6 +179,12 @@ pause_button = Button(root, text="Pause", command=pause_timer, width=10, height=
 pause_button.place(x=1600, y=940)
 
 update_timer()
+
+threadI2C = Thread(target=i2c_thread)
+threadI2C.start()
+
+threadUpdateGUI = Thread(target=update_gui)
+threadUpdateGUI.start()
 
 # Start GUI main loop
 root.mainloop()
