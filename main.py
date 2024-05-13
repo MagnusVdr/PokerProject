@@ -19,17 +19,13 @@ def i2c_thread():
     card1 = data_received[0]
 
 
-def update_gui():
+def update_gui(root):
     global card1
     global cardImage
     cardImage = Image.open("Images/" + pokerCards[card1] + ".png")
     cardImageGUI = ImageTk.PhotoImage(cardImage)
     cardGUILabel = Label(root, image=cardImageGUI)
-    if card1 == 1:
-        cardGUILabel.place(x=1000, y=0)
-    else:
-        cardGUILabel.place(x=1200, y=0)
-
+    cardGUILabel.place(x=1000, y=0)
 
 
 def update_poker_info(level, bb, ante, time):
@@ -180,10 +176,11 @@ pause_button.place(x=1600, y=940)
 
 update_timer()
 
-threadI2C = Thread(target=i2c_thread)
-threadI2C.start()
+# threadI2C = Thread(target=i2c_thread)
+#
+# threadI2C.start()
 
-threadUpdateGUI = Thread(target=update_gui)
+threadUpdateGUI = Thread(target=update_gui(root))
 threadUpdateGUI.start()
 
 # Start GUI main loop
