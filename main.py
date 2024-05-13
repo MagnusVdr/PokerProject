@@ -22,7 +22,7 @@ def i2c_thread():
 def update_gui():
     global card1
     global cardImage
-    cardImage = Image.open(pokerCards[card1] + ".png")
+    cardImage = Image.open("Images/" + pokerCards[card1] + ".png")
     cardImageGUI = ImageTk.PhotoImage(cardImage)
     cardGUILabel = Label(root, image=cardImageGUI)
     if card1 == 1:
