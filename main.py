@@ -1,39 +1,49 @@
 from tkinter import *
 from PIL import ImageTk, Image
-from threading import Thread
-from time import sleep
-from smbus import SMBus
+
 from header import *
-
-activePlayerIDs = []
-card1 = 0
-
-def i2c_thread():
-    bus_number = 1
-    bus = SMBus(bus_number)
-    data_to_send = [0x01, 0x00, 0x00, 0x00, 0x00, 0x20]
-    bus.write_i2c_block_data(players_ID[0], 0x00, data_to_send)
-    sleep(5)
-    data_received = bus.read_i2c_block_data(players_ID[0], 0x00, 6)
-    global card1
-    card1 = data_received[0]
+from smbus import SMBus
 
 
-def update_gui(root):
-    global card1
-    global cardImage
-    cardImage = Image.open("Images/" + pokerCards[card1] + ".png")
-    cardImageGUI = ImageTk.PhotoImage(cardImage)
-    # Update the GUI from the main thread using the after method
-    root.after(0, lambda: update_gui_gui(root, cardImageGUI))
-
-def update_gui_gui(root, cardImageGUI):
-    cardGUILabel = Label(root, image=cardImageGUI)
-    cardGUILabel.place(x=1000, y=0)
+def scan_i2c_devices():
+    for i in range(10):
+        try:
+            bus.read_byte(player_addresses[i])
+            devices.append(i)
+            print("device" + str(i) + "found")
+        except IOError:
+            pass
 
 
-def update_poker_info(level, bb, ante, time):
-    poker_info_label.config(text=f"Level: {level} | BB: {bb} | Ante: {ante} | Time: {time}")
+def initialize_players():
+    for i in devices:
+        player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3], cords[i][4],
+                                                cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
+        player.place_widgets()
+        players.append(player)
+# bus.write_i2c_block_data(player_addresses[0], 0x00, data_to_send)
+
+
+def read_i2c():
+    for player in players:
+        data_received = []
+        data_received = bus.read_i2c_block_data(player.address, 0x00, 6)
+        player.update_player_info(hand=[data_received[1], data_received[2]],
+                                  stack=(data_received[3] << 8) | data_received[4])
+
+
+def update_info():
+    for player in players:
+        player.place_widgets()
+
+
+def update_gui():
+    pass
+
+
+def update_poker_info(time):
+    global poker_info_label
+    poker_info_label.config(text=f"Level: {level} | BB: {BB} | Ante: {ante} | Time: {time}")
 
 
 def update_timer():
@@ -47,7 +57,7 @@ def update_timer():
             seconds = 59
         # Format the time string
         time_str = f"{minutes:02d}:{seconds:02d}"
-        update_poker_info(level, BB, ante, time_str)
+        update_poker_info(time_str)
         # If timer is not zero, continue updating
         if minutes > 0 or seconds > 0:
             root.after(1000, update_timer)
@@ -66,8 +76,9 @@ def pause_timer():
     timer_running = False
 
 
-def create_gui(root, screen_width, screen_height):
-    # root.overrideredirect(True)
+def create_gui():
+    root.overrideredirect(True)
+    global screen_width, screen_height
     root.geometry(f"{screen_width}x{screen_height}+0+0")
     # root.wm_attributes("-topmost", 1)
     pokerTableImage = Image.open("Images/PokerTable.png")
@@ -76,7 +87,25 @@ def create_gui(root, screen_width, screen_height):
     labelImage = Label(root, image=pokerTableGUI)
     labelImage.place(x=0, y=0)
 
+    config_button = Button(root, text="Open Config Window", command=open_config_window, width=20, height=3)
+    config_button.place(x=0, y=0)
 
+    # Label for BB, ante, timer
+    global poker_info_label
+    poker_info_label = Label(root,
+                             text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: 00:00",
+                             font=("Arial", 14), bg="white", fg="black")
+    poker_info_label.place(relx=0.95, rely=0.05, anchor="ne")
+
+    # Buttons for start and pause
+    start_button = Button(root, text="Start", command=start_timer, width=10, height=2)
+    start_button.place(x=1600, y=900)
+
+    pause_button = Button(root, text="Pause", command=pause_timer, width=10, height=2)
+    pause_button.place(x=1600, y=940)
+
+    close_button = Button(root, text="Close Application", command=root.quit)
+    close_button.place(x=1600, y=980)
 
 
 def open_config_window():
@@ -106,7 +135,8 @@ def open_config_window():
         entry.insert(0, str(anteLevelValues[i]))
         anteEntries.append(entry)
 
-    Button(config_window, text="Save", command=lambda: save_config(time_entry, BBEntries, anteEntries)).grid(row=21, columnspan=2)
+    Button(config_window, text="Save", command=lambda: save_config(time_entry, BBEntries, anteEntries)).grid(row=21,
+                                                                                                             columnspan=2)
 
 
 def save_config(time_entry, bb_entries, ante_entries):
@@ -143,48 +173,45 @@ def read_config():
         anteLevelValues = [1] * 10
 
 
+try:
+    pass
+    bus = SMBus(1)
+except FileNotFoundError:
+    print("I2C bus not found.")
 # Initialize timer variables
-minutes = 10  # Set the initial minutes here
+minutes = 0  # Set the initial minutes here
 seconds = 0
-
-level = 1
 timer_running = False
-BBLevelValues = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-anteLevelValues = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+level = 1
+devices = []
+players = []
 
-read_config()
-BB = BBLevelValues[0]
-ante = anteLevelValues[0]
-
-# Create GUI
+BBLevelValues = [1] * 10
+anteLevelValues = [1] * 10
 root = Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
-create_gui(root, screen_width, screen_height)
 
-# Button for the config window
-config_button = Button(root, text="Open Config Window", command=open_config_window, width=20, height=3)
-config_button.place(x=0, y=0)
+def setup():
+    read_config()
+    create_gui()
+    update_timer()
+    scan_i2c_devices()
+    initialize_players()
 
-# Label for BB, ante, timer
-poker_info_label = Label(root, text=f"Level: {level} | BB: {BB} | Ante: {ante} | Time: 00:00", font=("Arial", 14), bg="white", fg="black")
-poker_info_label.place(relx=0.95, rely=0.05, anchor="ne")
 
-# Buttons for start and pause
-start_button = Button(root, text="Start", command=start_timer, width=10, height=2)
-start_button.place(x=1600, y=900)
+def loop():
+    read_i2c()
+    update_info()
+    root.after(100, loop)
 
-pause_button = Button(root, text="Pause", command=pause_timer, width=10, height=2)
-pause_button.place(x=1600, y=940)
 
-update_timer()
+setup()
 
-update_gui(root)
+# update_gui()
 
-# threadI2C = Thread(target=i2c_thread)
-#
-# threadI2C.start()
+# i2c_thread(root)
 
 # Start GUI main loop
 root.mainloop()
