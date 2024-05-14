@@ -5,6 +5,14 @@ from header import *
 from smbus2 import SMBus
 
 
+def add_players():
+    for i in range(1, 10):
+        player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
+                        cords[i][4],
+                        cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
+        player.place_widgets()
+
+
 def scan_i2c_devices():
     for i in range(10):
         try:
@@ -21,7 +29,6 @@ def initialize_players():
                                                 cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
         player.place_widgets()
         players.append(player)
-# bus.write_i2c_block_data(player_addresses[0], 0x00, data_to_send)
 
 
 def read_i2c():
@@ -50,13 +57,13 @@ def update_gui():
 
 def update_poker_info(time):
     global poker_info_label
-    poker_info_label.config(text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: {time}")
+    poker_info_label.config(
+        text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: {time}")
 
 
 def update_timer():
     global minutes, seconds, BB, ante, timer_running
     if timer_running:
-        # Decrement the timer
         if seconds > 0:
             seconds -= 1
         elif minutes > 0:
@@ -206,6 +213,7 @@ def setup():
     update_timer()
     scan_i2c_devices()
     initialize_players()
+    add_players()
 
 
 def loop():
