@@ -179,6 +179,7 @@ class Player:
             self.nameLabel.config(text=self.name)
 
         if hand is not None:
+            print(hand)
             self.hand = hand
             self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
             self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
