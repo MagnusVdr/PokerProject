@@ -27,10 +27,16 @@ def initialize_players():
 def read_i2c():
     for player in players:
         data_received = []
-        data_received = bus.read_i2c_block_data(player.address, 0x00, 6)
+        data_received = bus.read_i2c_block_data(player.address, 6, 6)
         print(data_received)
         player.update_player_info(hand=[data_received[1], data_received[2]],
                                   stack=(data_received[3] << 8) | data_received[4])
+
+
+def write_i2c():
+    for player in players:
+        data_to_send = []
+        bus.write_i2c_block_data(player.address, 0x00, data_to_send)
 
 
 def update_info():
