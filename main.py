@@ -208,10 +208,7 @@ def loop():
 
 
 setup()
-
-# update_gui()
-
-# i2c_thread(root)
+loop()
 
 # Start GUI main loop
 root.mainloop()
