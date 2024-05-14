@@ -2,7 +2,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 
 from header import *
-from smbus import SMBus
+from smbus2 import SMBus
 
 
 def scan_i2c_devices():
@@ -50,7 +50,7 @@ def update_gui():
 
 def update_poker_info(time):
     global poker_info_label
-    poker_info_label.config(text=f"Level: {level} | BB: {BB} | Ante: {ante} | Time: {time}")
+    poker_info_label.config(text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: {time}")
 
 
 def update_timer():
@@ -189,7 +189,7 @@ except FileNotFoundError:
 minutes = 0  # Set the initial minutes here
 seconds = 0
 timer_running = False
-level = 1
+level = 0
 devices = []
 players = []
 
