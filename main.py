@@ -2,7 +2,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 
 from header import *
-from smbus2 import SMBus
+#from smbus2 import SMBus
 
 
 def add_players():
@@ -186,7 +186,7 @@ def read_config():
 
 try:
     pass
-    bus = SMBus(1)
+    #bus = SMBus(1)
 except FileNotFoundError:
     print("I2C bus not found.")
 # Initialize timer variables
@@ -211,13 +211,13 @@ def setup():
     read_config()
     create_gui()
     update_timer()
-    scan_i2c_devices()
+    #scan_i2c_devices()
     initialize_players()
     add_players()
 
 
 def loop():
-    read_i2c()
+    #read_i2c()
     update_info()
     root.after(100, loop)
 
