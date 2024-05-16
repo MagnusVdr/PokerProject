@@ -94,7 +94,9 @@ def create_gui():
     global screen_width, screen_height
     root.geometry(f"{screen_width}x{screen_height}+0+0")
     root.attributes("-fullscreen", True)
+    root.attributes("-topmost", True)
     # root.wm_attributes("-topmost", 1)
+
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
     pokerTableGUI = ImageTk.PhotoImage(pokerTableImage)
