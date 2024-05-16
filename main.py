@@ -91,7 +91,7 @@ def pause_timer():
 
 
 def create_gui():
-    root.overrideredirect(True)
+    root.attributes("-fullscreen", True)
     global screen_width, screen_height
     root.geometry(f"{screen_width}x{screen_height}+0+0")
     # root.wm_attributes("-topmost", 1)
