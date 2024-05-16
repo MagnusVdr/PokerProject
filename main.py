@@ -242,7 +242,7 @@ def setup():
 def loop():
     read_i2c()
     update_info()
-    root.after(500, loop)
+    root.after(1000, loop)
 
 
 setup()
