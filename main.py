@@ -92,11 +92,8 @@ def pause_timer():
 
 def create_gui():
     global screen_width, screen_height
-    global screen_width, screen_height
-    root.geometry(f"{screen_width}x{screen_height}+0+0")
-    root.overrideredirect(True)  # Remove window decorations
-
-    #root.attributes("-fullscreen", True)  # Raspberry Pi fullscreen mode
+    root.geometry(f"{screen_width}x{screen_height}")
+    root.state('zoomed')
 
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
