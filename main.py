@@ -129,7 +129,7 @@ def open_config_window():
 
     config_window = Toplevel(root)
     config_window.title("Poker Level Configuration")
-    config_window.transient(root)
+    config_window.grab_set()
 
     Label(config_window, text="Time between levels (minutes):").grid(row=0, column=0)
     time_entry = Entry(config_window)
