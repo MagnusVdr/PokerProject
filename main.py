@@ -8,8 +8,7 @@ from smbus2 import SMBus
 def add_players():
     for i in range(1, 10):
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
-                        cords[i][4],
-                        cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
+                        cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
         player.place_widgets()
 
 
@@ -95,7 +94,7 @@ def create_gui():
     root.geometry(f"{screen_width}x{screen_height}+0+0")
     root.attributes("-fullscreen", True)
     root.attributes("-topmost", True)
-    # root.wm_attributes("-topmost", 1)
+
 
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
