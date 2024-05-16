@@ -126,7 +126,6 @@ def open_config_window():
 
     config_window = Toplevel(root)
     config_window.title("Poker Level Configuration")
-    config_window.lift()
     config_window.wm_attributes("-topmost", 1)
 
     Label(config_window, text="Time between levels (minutes):").grid(row=0, column=0)
@@ -203,9 +202,9 @@ anteLevelValues = [1] * 10
 root = Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
-root.geometry(f"{screen_width}x{screen_height}+0+0")
 root.attributes("-fullscreen", True)
 root.attributes("-topmost", True)
+root.geometry(f"{screen_width}x{screen_height}+0+0")
 
 
 def setup():
