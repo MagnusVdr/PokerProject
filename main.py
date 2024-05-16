@@ -91,7 +91,7 @@ def pause_timer():
 
 
 def create_gui():
-    # root.overrideredirect(True)
+    root.overrideredirect(True)
     global screen_width, screen_height
     root.geometry(f"{screen_width}x{screen_height}+0+0")
     # root.wm_attributes("-topmost", 1)
@@ -129,6 +129,7 @@ def open_config_window():
 
     config_window = Toplevel(root)
     config_window.title("Poker Level Configuration")
+    config_window.lift()
     config_window.wm_attributes("-topmost", 1)
 
     Label(config_window, text="Time between levels (minutes):").grid(row=0, column=0)
