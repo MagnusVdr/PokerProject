@@ -91,9 +91,9 @@ def pause_timer():
 
 
 def create_gui():
-    root.attributes("-fullscreen", True)
     global screen_width, screen_height
     root.geometry(f"{screen_width}x{screen_height}+0+0")
+    root.attributes("-fullscreen", True)
     # root.wm_attributes("-topmost", 1)
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
