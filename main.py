@@ -3,7 +3,22 @@ from PIL import ImageTk, Image
 import platform
 
 from header import *
-#from smbus2 import SMBus
+
+class DummySMBus:
+    def read_byte(self, addr):
+        return 0
+
+    def read_i2c_block_data(self, addr, cmd, length):
+        return [0] * length
+
+    def write_i2c_block_data(self, addr, cmd, data):
+        pass
+
+is_linux = platform.system() == "Linux"
+if is_linux:
+    from smbus2 import SMBus
+else:
+    SMBus = DummySMBus
 
 
 def add_players():
@@ -11,9 +26,12 @@ def add_players():
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
                         cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
         player.place_widgets()
+        fake_players.append(player)
 
 
 def scan_i2c_devices():
+    if not is_linux:
+        return
     for i in range(10):
         try:
             bus.read_byte(player_addresses[i])
@@ -32,6 +50,8 @@ def initialize_players():
 
 
 def read_i2c():
+    if not is_linux:
+        return
     for player in players:
         data_received = []
         data_received = bus.read_i2c_block_data(player.address, 6, 6)
@@ -93,7 +113,7 @@ def pause_timer():
 def create_gui():
     global screen_width, screen_height
     root.geometry(f"{screen_width}x{screen_height}")
-    root.state('zoomed')
+    root.after(100, lambda: root.attributes('-fullscreen', 1))
 
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
@@ -129,7 +149,7 @@ def open_config_window():
 
     config_window = Toplevel(root)
     config_window.title("Poker Level Configuration")
-    config_window.wm_attributes("-topmost", 1)
+    config_window.wm_attributes("-fullscreen", 1)
 
     Label(config_window, text="Time between levels (minutes):").grid(row=0, column=0)
     time_entry = Entry(config_window)
@@ -187,11 +207,13 @@ def read_config():
         anteLevelValues = [1] * 10
 
 
-try:
-    pass
-    #bus = SMBus(1)
-except FileNotFoundError:
-    print("I2C bus not found.")
+if is_linux:
+    try:
+        bus = SMBus(1)
+    except FileNotFoundError:
+        print("I2C bus not found.")
+else:
+    bus = None
 # Initialize timer variables
 minutes = 0  # Set the initial minutes here
 seconds = 0
@@ -199,6 +221,7 @@ timer_running = False
 level = 0
 devices = []
 players = []
+fake_players = []
 
 BBLevelValues = [1] * 10
 anteLevelValues = [1] * 10
@@ -206,19 +229,20 @@ root = Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
+
 def setup():
     read_config()
     create_gui()
     update_timer()
-    #scan_i2c_devices()
+    scan_i2c_devices()
     initialize_players()
     add_players()
 
 
 def loop():
-    #read_i2c()
+    read_i2c()
     update_info()
-    root.after(100, loop)
+    root.after(500, loop)
 
 
 setup()
