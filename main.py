@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import ImageTk, Image
+import platform
 
 from header import *
 #from smbus2 import SMBus
@@ -91,6 +92,11 @@ def pause_timer():
 
 def create_gui():
     global screen_width, screen_height
+    global screen_width, screen_height
+    root.geometry(f"{screen_width}x{screen_height}+0+0")
+    root.overrideredirect(True)  # Remove window decorations
+
+    #root.attributes("-fullscreen", True)  # Raspberry Pi fullscreen mode
 
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
@@ -202,10 +208,6 @@ anteLevelValues = [1] * 10
 root = Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
-root.attributes("-fullscreen", True)
-root.attributes("-topmost", True)
-root.geometry(f"{screen_width}x{screen_height}+0+0")
-
 
 def setup():
     read_config()
