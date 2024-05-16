@@ -91,10 +91,6 @@ def pause_timer():
 
 def create_gui():
     global screen_width, screen_height
-    root.geometry(f"{screen_width}x{screen_height}+0+0")
-    root.attributes("-fullscreen", True)
-    root.attributes("-topmost", True)
-
 
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
@@ -207,6 +203,9 @@ anteLevelValues = [1] * 10
 root = Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
+root.geometry(f"{screen_width}x{screen_height}+0+0")
+root.attributes("-fullscreen", True)
+root.attributes("-topmost", True)
 
 
 def setup():
