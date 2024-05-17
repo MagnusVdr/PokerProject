@@ -102,15 +102,24 @@ def start_timer():
     global timer_running
     timer_running = True
     update_timer()
+    start_button.config(state=DISABLED)  # Disable the start button
+    loop()
 
 
 def pause_timer():
     global timer_running
     timer_running = False
+    if timer_running:
+        timer_running = False
+        pause_button.config(text="Continue")
+    else:
+        timer_running = True
+        pause_button.config(text="Pause")
+        update_timer()
 
 
 def create_gui():
-    global screen_width, screen_height
+    global screen_width, screen_height, start_button, pause_button
     root.geometry(f"{screen_width}x{screen_height}")
     root.after(500, lambda: root.attributes('-fullscreen', 1))
 
@@ -239,9 +248,10 @@ def setup():
 
 
 def loop():
-    read_i2c()
-    update_info()
-    root.after(1000, loop)
+    if timer_running:
+        read_i2c()
+        update_info()
+        root.after(1000, loop)
 
 
 setup()
