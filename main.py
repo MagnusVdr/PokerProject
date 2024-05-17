@@ -113,7 +113,7 @@ def pause_timer():
 def create_gui():
     global screen_width, screen_height
     root.geometry(f"{screen_width}x{screen_height}")
-    root.after(100, lambda: root.attributes('-fullscreen', 1))
+    root.after(500, lambda: root.attributes('-fullscreen', 1))
 
     pokerTableImage = Image.open("Images/PokerTable.png")
     global pokerTableGUI
@@ -190,7 +190,7 @@ def save_config(time_entry, bb_entries, ante_entries):
 
 
 def read_config():
-    global minutes, BB, ante, BBLevelValues, anteLevelValues
+    global minutes, BBLevelValues, anteLevelValues
     try:
         with open('config.txt', 'r') as file:
             lines = file.readlines()
