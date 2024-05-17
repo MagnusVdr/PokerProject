@@ -179,7 +179,6 @@ class Player:
             self.nameLabel.config(text=self.name)
 
         if hand is not None:
-            print(hand)
             self.hand = hand
             self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
             self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
@@ -190,6 +189,7 @@ class Player:
 
         if stack is not None:
             self.stack = stack
+            print(f"Stack in player: {stack}");
             self.stackLabel.config(text="stack:" + str(self.stack))
 
         if winPerc is not None:
