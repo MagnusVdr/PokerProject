@@ -53,11 +53,12 @@ def read_i2c():
     if not is_linux:
         return
     for player in players:
-        data_received = []
-        data_received = bus.read_i2c_block_data(player.address, 6, 6)
-        print(data_received)
-        player.update_player_info(hand=[data_received[1], data_received[2]],
-                                  stack=(data_received[4] << 8) | data_received[5])
+        try:
+            data_received = bus.read_i2c_block_data(player.address, 6, 6)
+            player.update_player_info(hand=[data_received[1], data_received[2]],
+                                      stack=(data_received[4] << 8) | data_received[5])
+        except OSError as e:
+            print(f"Error reading from I2C device at address {player.address}: {e}")
 
 
 def write_i2c():
