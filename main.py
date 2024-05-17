@@ -58,7 +58,7 @@ def read_i2c():
         print(f"1: {data_received[0]}|Hand: {data_received[1]}, {data_received[2]}|folded: {data_received[3]}")
         print(f"stack: {data_received[4]} {data_received[5]}")
         player.update_player_info(hand=[data_received[1], data_received[2]],
-                                  stack=(data_received[3] << 8) | data_received[4])
+                                  stack=(data_received[4] << 8) | data_received[5])
 
 
 def write_i2c():
