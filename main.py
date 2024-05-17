@@ -55,6 +55,7 @@ def read_i2c():
     for player in players:
         data_received = []
         data_received = bus.read_i2c_block_data(player.address, 6, 6)
+        print(data_received)
         player.update_player_info(hand=[data_received[1], data_received[2]],
                                   stack=(data_received[4] << 8) | data_received[5])
 
@@ -108,8 +109,9 @@ def start_timer():
 
 def pause_timer():
     global timer_running
-    timer_running = False
+
     if timer_running:
+        print("got here")
         timer_running = False
         pause_button.config(text="Continue")
     else:
