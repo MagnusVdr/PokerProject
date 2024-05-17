@@ -55,8 +55,6 @@ def read_i2c():
     for player in players:
         data_received = []
         data_received = bus.read_i2c_block_data(player.address, 6, 6)
-        print(f"1: {data_received[0]}|Hand: {data_received[1]}, {data_received[2]}|folded: {data_received[3]}")
-        print(f"stack: {data_received[4]} {data_received[5]}")
         player.update_player_info(hand=[data_received[1], data_received[2]],
                                   stack=(data_received[4] << 8) | data_received[5])
 

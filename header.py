@@ -189,7 +189,6 @@ class Player:
 
         if stack is not None:
             self.stack = stack
-            print(f"Stack in player: {stack}");
             self.stackLabel.config(text="stack:" + str(self.stack))
 
         if winPerc is not None:
