@@ -272,6 +272,7 @@ class Player:
                     self.folded = 1
                     self.winPerc = 0
                     self.tiePerc = 0
+                    print(f"W {winPerc} T {tiePerc}")
                 else:
                     self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png").convert("RGBA")
                     self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
