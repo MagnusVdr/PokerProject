@@ -172,6 +172,7 @@ class Player:
     def __init__(self, ID, root, playerNumber, name_x, name_y, stack_x, stack_y, card1_x, card1_y, card2_x, card2_y, win_x, win_y, tie_x, tie_y):
         self.address = ID
         self.root = root
+        self.playerNumber = playerNumber
         self.name = f"Player {playerNumber}"
         self.nameLabel = Label(root, text=self.name, font=("Arial", 24), fg="black", bd=0)
         self.hand = [0, 0]
@@ -255,11 +256,11 @@ class Player:
 
         if winPerc is not None:
             self.winPerc = winPerc
-            self.winPercLabel.config(text=str(self.winPerc))
+            self.winPercLabel.config(text="W:" + str(self.winPerc) + "%")
 
         if tiePerc is not None:
             self.tiePerc = tiePerc
-            self.tiePercLabel.config(text=str(self.winPerc))
+            self.tiePercLabel.config(text="T:" + str(self.tiePerc) + "%")
 
         if folded is not None:
             if self.folded != folded:

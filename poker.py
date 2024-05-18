@@ -33,9 +33,6 @@ def calculate_win_percentages(player_hands, community_cards, folded_hands):
         if card_str not in used_cards:
             remaining_deck.append(card)
 
-    print("Used card:")
-    print(used_cards)
-
     win_counts = [0] * len(player_hands)
     tie_counts = [0] * len(player_hands)
 

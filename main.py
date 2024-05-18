@@ -25,7 +25,36 @@ else:
 
 
 def update_win_chance():
-    pass
+    not_folded_players = []
+    hands = []
+    folded_hands = []
+    for player in players:
+        if player.folded == 1:
+            folded_hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
+        else:
+            hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
+            not_folded_players.append(player)
+    for player in fake_players:
+        if player.folded == 1:
+            folded_hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
+        else:
+            hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
+            not_folded_players.append(player)
+
+    community_cards = []
+    for card in community.cards:
+        if card != 0:
+            community_cards.append(pokerCards[card])
+        else:
+            break
+
+    if (len(community_cards) < 3) or (len(hands) < 2):
+        return
+
+    win_chances, tie_chances, _ = calculate_win_percentages(hands, community_cards, folded_hands)
+
+    for i, player in enumerate(not_folded_players):
+        player.update_player_info(winPerc=win_chances[i], tiePerc=tie_chances[i])
 
 
 def simulate_players():
@@ -281,12 +310,11 @@ def loop():
     if timer_running:
         read_i2c()
         update_info()
+        update_win_chance()
         root.after(1000, loop)
 
 
 setup()
-i = 0
-player = fake_players[0]
 loop()
 
 # Start GUI main loop
