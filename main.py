@@ -29,6 +29,8 @@ def update_win_chance():
     hands = []
     folded_hands = []
     for player in players:
+        if player.hand[0] == 0 or player.hand[1] == 0:
+            continue;
         if player.folded == 1:
             folded_hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
         else:
