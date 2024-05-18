@@ -1,9 +1,27 @@
-from tkinter import *
-from PIL import ImageTk, Image
-
 from header import *
 from poker import *
 from I2C_reader import *
+
+
+def set_up_debug():
+    def toggle_fold(player):
+        player.update_player_info(folded=not player.folded)
+        print(f"{player.name} folded: {player.folded}")
+
+    def open_debug_window():
+        debug_window = Toplevel(players[0].root)
+        debug_window.title("Debug Window")
+
+        for player in players:
+            btn = Button(
+                debug_window,
+                text=f"Toggle {player.name} Fold",
+                command=lambda p=player: toggle_fold(p)
+            )
+            btn.pack(pady=5)
+
+    debug_button = Button(players[0].root, text="Open Debug Window", command=open_debug_window)
+    debug_button.pack(pady=20)
 
 
 def update_win_chance():
@@ -13,12 +31,6 @@ def update_win_chance():
     for player in players:
         if player.hand[0] == 0 or player.hand[1] == 0:
             continue
-        if player.folded == 1:
-            folded_hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
-        else:
-            hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
-            not_folded_players.append(player)
-    for player in fake_players:
         if player.folded == 1:
             folded_hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
         else:
@@ -48,7 +60,7 @@ def simulate_players():
                         cords[i][11])
         player.update_player_info(hand=[i * 3, i * 3 + 1], folded= i % 2)
         player.place_widgets()
-        fake_players.append(player)
+        players.append(player)
 
 
 def initialize_players(devices):
@@ -234,7 +246,6 @@ seconds = 0
 timer_running = False
 level = 0
 players = []
-fake_players = []
 global community
 BBLevelValues = [1] * 10
 anteLevelValues = [1] * 10
@@ -245,7 +256,8 @@ def setup():
     create_gui()
     update_timer()
     devices = scan_i2c_devices(bus)
-    initialize_players(devices)
+    if is_linux:
+        initialize_players(devices)
     simulate_players()
     simulate_community()
 
@@ -259,6 +271,7 @@ def loop():
 
 
 setup()
+set_up_debug()
 loop()
 
 # Start GUI main loop

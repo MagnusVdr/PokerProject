@@ -213,6 +213,7 @@ class Player:
         self.card2Label.place(x=self.card2_x, y=self.card2_y)
 
     def fold_cards(self):
+        print("Got here folded")
         alpha = 80
         # Create a new image with white background and desired alpha value
         grayed_card1 = Image.new("RGBA", self.card1Image.size, (255, 255, 255, alpha))
@@ -270,6 +271,7 @@ class Player:
         if folded is not None:
             if self.folded != folded:
                 if folded == 1:
+                    print("Got here pre folded")
                     self.fold_cards()
                     self.folded = 1
                     self.winPerc = 0

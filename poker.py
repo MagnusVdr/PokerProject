@@ -39,7 +39,6 @@ def calculate_win_percentages(player_hands, community_cards, folded_hands):
     player_outs = [set() for _ in range(len(player_hands))]
 
     numb_of_iterations = 0
-    # Simulate the outcomes
     if len(community_cards_treys) == 3:
         pass
         for card1 in remaining_deck:
