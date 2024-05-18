@@ -1,8 +1,11 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import platform
+import treys
 
 from header import *
+from poker import *
+
 
 class DummySMBus:
     def read_byte(self, addr):
@@ -14,6 +17,7 @@ class DummySMBus:
     def write_i2c_block_data(self, addr, cmd, data):
         pass
 
+
 is_linux = platform.system() == "Linux"
 if is_linux:
     from smbus2 import SMBus
@@ -21,10 +25,16 @@ else:
     SMBus = DummySMBus
 
 
-def add_players():
+def update_win_chance():
+    pass
+
+
+def simulate_players():
     for i in range(1, 10):
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
-                        cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
+                        cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9], cords[i][10],
+                        cords[i][11])
+        player.update_player_info(hand=[i * 3, i * 3 + 1], folded= i % 2)
         player.place_widgets()
         fake_players.append(player)
 
@@ -36,15 +46,15 @@ def scan_i2c_devices():
         try:
             bus.read_byte(player_addresses[i])
             devices.append(i)
-            print("device" + str(i) + "found")
         except IOError:
             pass
 
 
 def initialize_players():
     for i in devices:
-        player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3], cords[i][4],
-                                                cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9])
+        player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
+                        cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9], cords[i][10],
+                        cords[i][11])
         player.place_widgets()
         players.append(player)
 
@@ -55,10 +65,28 @@ def read_i2c():
     for player in players:
         try:
             data_received = bus.read_i2c_block_data(player.address, 6, 6)
-            player.update_player_info(hand=[data_received[1], data_received[2]],
+            player.update_player_info(hand=[data_received[1], data_received[2]], folded=data_received[3],
                                       stack=(data_received[4] << 8) | data_received[5])
         except OSError as e:
             print(f"Error reading from I2C device at address {player.address}: {e}")
+
+
+def read_i2c_community():
+    if not is_linux:
+        return
+    try:
+        data_received = bus.read_i2c_block_data(community.address, 6, 6)
+        community.update(cards=[data_received[1], data_received[2], data_received[3], data_received[4], data_received[5]])
+    except OSError as e:
+        print(f"Error reading from I2C device at address {community.address}: {e}")
+
+
+def simulate_community():
+    global community
+    community = Community(110, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
+                          CMYC5_y)
+    community.update(cards=[49, 27, 35, 52, 48])
+    community.place_widgets()
 
 
 def write_i2c():
@@ -83,7 +111,7 @@ def update_poker_info(time):
 
 
 def update_timer():
-    global minutes, seconds, BB, ante, timer_running
+    global minutes, seconds, timer_running
     if timer_running:
         if seconds > 0:
             seconds -= 1
@@ -139,18 +167,18 @@ def create_gui():
     global poker_info_label
     poker_info_label = Label(root,
                              text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: 00:00",
-                             font=("Arial", 14), bg="white", fg="black")
-    poker_info_label.place(relx=0.95, rely=0.05, anchor="ne")
+                             font=("Arial", 20), fg="black")
+    poker_info_label.place(relx=1, rely=0, anchor="ne")
 
     # Buttons for start and pause
     start_button = Button(root, text="Start", command=start_timer, width=10, height=2)
-    start_button.place(x=1600, y=900)
+    start_button.place(x=0, y=60)
 
     pause_button = Button(root, text="Pause", command=pause_timer, width=10, height=2)
-    pause_button.place(x=1600, y=940)
+    pause_button.place(x=0, y=100)
 
     close_button = Button(root, text="Close Application", command=root.quit)
-    close_button.place(x=1600, y=980)
+    close_button.place(x=0, y=140)
 
 
 def open_config_window():
@@ -160,7 +188,6 @@ def open_config_window():
 
     config_window = Toplevel(root)
     config_window.title("Poker Level Configuration")
-    config_window.wm_attributes("-fullscreen", 1)
 
     Label(config_window, text="Time between levels (minutes):").grid(row=0, column=0)
     time_entry = Entry(config_window)
@@ -185,10 +212,8 @@ def open_config_window():
 
 
 def save_config(time_entry, bb_entries, ante_entries):
-    global minutes, BB, ante
+    global minutes
     minutes = int(time_entry.get())
-    BB = int(bb_entries[0].get())
-    ante = int(ante_entries[0].get())
     for i in range(10):
         BBLevelValues[i] = int(bb_entries[i].get())
         anteLevelValues[i] = int(ante_entries[i].get())
@@ -226,6 +251,11 @@ if is_linux:
 else:
     bus = None
 # Initialize timer variables
+
+root = Tk()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
 minutes = 0  # Set the initial minutes here
 seconds = 0
 timer_running = False
@@ -233,12 +263,9 @@ level = 0
 devices = []
 players = []
 fake_players = []
-
+global community
 BBLevelValues = [1] * 10
 anteLevelValues = [1] * 10
-root = Tk()
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
 
 
 def setup():
@@ -247,7 +274,8 @@ def setup():
     update_timer()
     scan_i2c_devices()
     initialize_players()
-    add_players()
+    simulate_players()
+    simulate_community()
 
 
 def loop():
@@ -258,6 +286,8 @@ def loop():
 
 
 setup()
+i = 0
+player = fake_players[0]
 loop()
 
 # Start GUI main loop
