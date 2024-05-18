@@ -242,7 +242,6 @@ class Player:
 
         if hand is not None:
             self.hand = hand
-            print(hand)
             self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
             self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
             self.card1Label.config(image=self.card1ImageGui)
