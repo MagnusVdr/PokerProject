@@ -213,7 +213,6 @@ class Player:
         self.card2Label.place(x=self.card2_x, y=self.card2_y)
 
     def fold_cards(self):
-        print("Got here folded")
         alpha = 80
         # Create a new image with white background and desired alpha value
         grayed_card1 = Image.new("RGBA", self.card1Image.size, (255, 255, 255, alpha))
@@ -245,10 +244,8 @@ class Player:
             self.nameLabel.config(text=self.name)
 
         if hand is not None:
-            self.hand = hand
-            if self.folded == 1:
-                self.fold_cards()
-            else:
+            if self.hand != hand:
+                self.hand = hand
                 self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
                 self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
                 self.card1Label.config(image=self.card1ImageGui)
@@ -257,26 +254,26 @@ class Player:
                 self.card2Label.config(image=self.card2ImageGui)
 
         if stack is not None:
-            self.stack = stack
-            self.stackLabel.config(text="stack:" + str(self.stack))
+            if self.stack != stack:
+                self.stack = stack
+                self.stackLabel.config(text="stack:" + str(self.stack))
 
         if winPerc is not None:
-            self.winPerc = winPerc
-            self.winPercLabel.config(text="W:" + str(self.winPerc) + "%")
+            if self.winPerc != winPerc:
+                self.winPerc = winPerc
+                self.winPercLabel.config(text="W:" + str(self.winPerc) + "%")
 
         if tiePerc is not None:
-            self.tiePerc = tiePerc
-            self.tiePercLabel.config(text="T:" + str(self.tiePerc) + "%")
+            if self.tiePerc != tiePerc:
+                self.tiePerc = tiePerc
+                self.tiePercLabel.config(text="T:" + str(self.tiePerc) + "%")
 
         if folded is not None:
             if self.folded != folded:
                 if folded == 1:
-                    print("Got here pre folded")
                     self.fold_cards()
                     self.folded = 1
-                    self.winPerc = 0
-                    self.tiePerc = 0
-                    self.update_player_info(winPerc=self.winPerc, tiePerc=self.tiePerc)
+                    self.update_player_info(winPerc=0, tiePerc=0)
                 else:
                     self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png").convert("RGBA")
                     self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
@@ -326,20 +323,22 @@ class Community:
         self.card5Label.place(x=self.card5_x, y=self.card5_y)
 
     def update(self, cards):
-        self.cards = cards
-        self.card1Image = Image.open("Images/" + pokerCards[self.cards[0]] + ".png")
-        self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
-        self.card1Label.config(image=self.card1ImageGui)
-        self.card2Image = Image.open("Images/" + pokerCards[self.cards[1]] + ".png")
-        self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
-        self.card2Label.config(image=self.card2ImageGui)
-        self.card3Image = Image.open("Images/" + pokerCards[self.cards[2]] + ".png")
-        self.card3ImageGui = ImageTk.PhotoImage(self.card3Image)
-        self.card3Label.config(image=self.card3ImageGui)
-        self.card4Image = Image.open("Images/" + pokerCards[self.cards[3]] + ".png")
-        self.card4ImageGui = ImageTk.PhotoImage(self.card4Image)
-        self.card4Label.config(image=self.card4ImageGui)
-        self.card5Image = Image.open("Images/" + pokerCards[self.cards[4]] + ".png")
-        self.card5ImageGui = ImageTk.PhotoImage(self.card5Image)
-        self.card5Label.config(image=self.card5ImageGui)
+        if self.cards != cards:
+            self.cards = cards
+            print(self.cards)
+            self.card1Image = Image.open("Images/" + pokerCards[self.cards[0]] + ".png")
+            self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
+            self.card1Label.config(image=self.card1ImageGui)
+            self.card2Image = Image.open("Images/" + pokerCards[self.cards[1]] + ".png")
+            self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
+            self.card2Label.config(image=self.card2ImageGui)
+            self.card3Image = Image.open("Images/" + pokerCards[self.cards[2]] + ".png")
+            self.card3ImageGui = ImageTk.PhotoImage(self.card3Image)
+            self.card3Label.config(image=self.card3ImageGui)
+            self.card4Image = Image.open("Images/" + pokerCards[self.cards[3]] + ".png")
+            self.card4ImageGui = ImageTk.PhotoImage(self.card4Image)
+            self.card4Label.config(image=self.card4ImageGui)
+            self.card5Image = Image.open("Images/" + pokerCards[self.cards[4]] + ".png")
+            self.card5ImageGui = ImageTk.PhotoImage(self.card5Image)
+            self.card5Label.config(image=self.card5ImageGui)
 

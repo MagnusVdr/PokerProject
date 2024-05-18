@@ -48,7 +48,8 @@ def update_win_chance():
         return
 
     win_chances, tie_chances, _ = calculate_win_percentages(hands, community_cards, folded_hands)
-
+    if last_win_chances == win_chances:
+        return
     for i, player in enumerate(not_folded_players):
         player.update_player_info(winPerc=win_chances[i], tiePerc=tie_chances[i])
 
@@ -70,14 +71,6 @@ def initialize_players(devices):
                         cords[i][11])
         player.place_widgets()
         players.append(player)
-
-
-def simulate_community():
-    global community
-    community = Community(110, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
-                          CMYC5_y)
-    community.update(cards=[49, 1, 35, 46, 0])
-    community.place_widgets()
 
 
 def update_info():
@@ -228,6 +221,26 @@ def read_config():
         anteLevelValues = [1] * 10
 
 
+def keep_game_state(players, community, bus):
+    global all_folded
+    folds = 0
+    un_folds = 0
+    if all_folded == 1:
+        for player in players:
+            if player.folded == 1:
+                un_folds += 1
+        if un_folds == len(players):
+            all_folded = 0
+            write_community(bus, community, DRAW)
+    else:
+        for player in players:
+            if player.folded == 1:
+                folds += 1
+        if folds == len(players):
+            all_folded = 1
+            write_community(bus, community, DELETE)
+
+
 if is_linux:
     try:
         bus = SMBus(1)
@@ -246,26 +259,33 @@ seconds = 0
 timer_running = False
 level = 0
 players = []
-global community
 BBLevelValues = [1] * 10
 anteLevelValues = [1] * 10
+community = None
+all_folded = 1
+last_win_chances = []
 
 
 def setup():
+    global community
     read_config()
     create_gui()
     update_timer()
     devices = scan_i2c_devices(bus)
+    community = Community(110, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
+                          CMYC5_y)
     if is_linux:
         initialize_players(devices)
+    else:
+        simulate_community(community)
     simulate_players()
-    simulate_community()
 
 
 def loop():
     if timer_running:
         read_i2c(bus, players)
-        #update_info()
+        read_i2c_community(bus, community)
+        keep_game_state(players)
         update_win_chance()
         root.after(1000, loop)
 
