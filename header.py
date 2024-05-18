@@ -325,7 +325,6 @@ class Community:
     def update(self, cards):
         if self.cards != cards:
             self.cards = cards
-            print(self.cards)
             self.card1Image = Image.open("Images/" + pokerCards[self.cards[0]] + ".png")
             self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
             self.card1Label.config(image=self.card1ImageGui)

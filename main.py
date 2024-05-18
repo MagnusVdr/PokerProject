@@ -6,7 +6,6 @@ from I2C_reader import *
 def set_up_debug():
     def toggle_fold(player):
         player.update_player_info(folded=not player.folded)
-        print(f"{player.name} folded: {player.folded}")
 
     def open_debug_window():
         debug_window = Toplevel(players[0].root)
