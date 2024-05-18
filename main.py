@@ -1,7 +1,6 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import platform
-import treys
 
 from header import *
 from poker import *
