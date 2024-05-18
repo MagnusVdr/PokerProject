@@ -263,10 +263,11 @@ class Player:
             self.tiePercLabel.config(text="T:" + str(self.tiePerc) + "%")
 
         if folded is not None:
+            print(folded)
             if self.folded != folded:
                 if folded == 1:
                     self.fold_cards()
-                    self.folded = folded
+                    self.folded = 1
                 else:
                     self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png").convert("RGBA")
                     self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
@@ -274,7 +275,7 @@ class Player:
                     self.card2Image = Image.open("Images/" + pokerCards[self.hand[1]] + ".png").convert("RGBA")
                     self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
                     self.card2Label.config(image=self.card2ImageGui)
-                    self.folded = folded
+                    self.folded = 0
 
 
 class Community:
