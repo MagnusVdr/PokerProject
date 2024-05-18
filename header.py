@@ -243,12 +243,15 @@ class Player:
 
         if hand is not None:
             self.hand = hand
-            self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
-            self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
-            self.card1Label.config(image=self.card1ImageGui)
-            self.card2Image = Image.open("Images/" + pokerCards[self.hand[1]] + ".png")
-            self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
-            self.card2Label.config(image=self.card2ImageGui)
+            if self.folded == 1:
+                self.fold_cards()
+            else:
+                self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
+                self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
+                self.card1Label.config(image=self.card1ImageGui)
+                self.card2Image = Image.open("Images/" + pokerCards[self.hand[1]] + ".png")
+                self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
+                self.card2Label.config(image=self.card2ImageGui)
 
         if stack is not None:
             self.stack = stack
