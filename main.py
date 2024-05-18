@@ -236,6 +236,8 @@ def keep_game_state(players, community, bus):
         for player in players:
             if player.folded == 1:
                 folds += 1
+        print("folds:")
+        print(folds)
         if folds == len(players):
             all_folded = 1
             write_community(bus, community, DELETE)

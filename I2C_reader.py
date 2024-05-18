@@ -88,7 +88,8 @@ def read_i2c(bus, players):
             player.update_player_info(hand=[data_received[1], data_received[2]], folded=data_received[3],
                                       stack=(data_received[4] << 8) | data_received[5])
         except OSError as e:
-            print(f"Error reading from I2C device at address {player.address}: {e}")
+            pass
+            #print(f"Error reading from I2C device at address {player.address}: {e}")
 
 
 def write_community(bus, community, cmd):
