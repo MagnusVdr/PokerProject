@@ -56,6 +56,7 @@ def read_i2c_community(bus, community):
         return
     try:
         data_received = bus.read_i2c_block_data(community.address, 6, 6)
+        print(data_received)
         for i in range(1, 6):
             if community.cards[i - 1] != data_received[i]:
                 community.update(cards=[data_received[1], data_received[2],
