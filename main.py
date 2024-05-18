@@ -245,7 +245,7 @@ def setup():
     read_config()
     create_gui()
     update_timer()
-    scan_i2c_devices()
+    scan_i2c_devices(bus)
     initialize_players()
     simulate_players()
     simulate_community()
@@ -253,7 +253,7 @@ def setup():
 
 def loop():
     if timer_running:
-        read_i2c()
+        read_i2c(bus, players)
         update_info()
         update_win_chance()
         root.after(1000, loop)
