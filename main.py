@@ -51,7 +51,7 @@ def simulate_players():
         fake_players.append(player)
 
 
-def initialize_players():
+def initialize_players(devices):
     for i in devices:
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
                         cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9], cords[i][10],
@@ -233,7 +233,6 @@ minutes = 0  # Set the initial minutes here
 seconds = 0
 timer_running = False
 level = 0
-devices = []
 players = []
 fake_players = []
 global community
@@ -245,8 +244,8 @@ def setup():
     read_config()
     create_gui()
     update_timer()
-    scan_i2c_devices(bus)
-    initialize_players()
+    devices = scan_i2c_devices(bus)
+    initialize_players(devices)
     simulate_players()
     simulate_community()
 

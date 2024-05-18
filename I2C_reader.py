@@ -62,6 +62,7 @@ def scan_i2c_devices(bus):
             connected_devices.append(i)
         except IOError:
             pass
+    return connected_devices
 
 
 def read_i2c(bus, players):
