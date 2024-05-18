@@ -211,7 +211,7 @@ class Player:
         self.card2Label.place(x=self.card2_x, y=self.card2_y)
 
     def fold_cards(self):
-        alpha = 123
+        alpha = 80
         # Create a new image with white background and desired alpha value
         grayed_card1 = Image.new("RGBA", self.card1Image.size, (255, 255, 255, alpha))
         grayed_card2 = Image.new("RGBA", self.card2Image.size, (255, 255, 255, alpha))
