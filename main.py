@@ -93,6 +93,7 @@ def read_i2c():
     for player in players:
         try:
             data_received = bus.read_i2c_block_data(player.address, 6, 6)
+            print(data_received)
             player.update_player_info(hand=[data_received[1], data_received[2]], folded=data_received[3],
                                       stack=(data_received[4] << 8) | data_received[5])
         except OSError as e:
