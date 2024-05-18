@@ -272,6 +272,7 @@ class Player:
                     self.folded = 1
                     self.winPerc = 0
                     self.tiePerc = 0
+                    self.update_player_info(winPerc=self.winPerc, tiePerc=self.tiePerc)
                     print(f"W {self.winPerc} T {self.tiePerc}")
                 else:
                     self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png").convert("RGBA")
