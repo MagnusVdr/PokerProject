@@ -9,7 +9,7 @@ pokerCards = [
       "Ah", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "Th", "Jh", "Qh", "Kh"
     ]
 
-
+"""Player node card coordinates"""
 P1C1_x = 545
 P1C1_y = 928
 P1C2_x = P1C1_x + 80
@@ -139,7 +139,10 @@ P10W_x = P10C1_x + 160
 P10W_y = P1W_y
 P10T_x = P10C1_x + 160
 P10T_y = P10C1_y + 72
+""""""""""""""""""""""""
 
+
+"""Community node card coordinates"""
 CMYC3_x = 920
 CMYC3_y = 485
 CMYC1_x = CMYC3_x - 186
@@ -150,6 +153,7 @@ CMYC4_x = CMYC3_x + 93
 CMYC4_y = CMYC3_y
 CMYC5_x = CMYC3_x + 186
 CMYC5_y = CMYC3_y
+""""""""""""""""""""""""""
 
 cords = [
     [P1N_x, P1N_y, P1P_x, P1P_y, P1C1_x, P1C1_y, P1C2_x, P1C2_y, P1W_x, P1W_y, P1T_x, P1T_y],
@@ -165,12 +169,10 @@ cords = [
     ]
 
 
-player_addresses = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-
-
 class Player:
     def __init__(self, ID, root, playerNumber, name_x, name_y, stack_x, stack_y, card1_x, card1_y, card2_x, card2_y, win_x, win_y, tie_x, tie_y):
         self.address = ID
+        self.connected = 0
         self.root = root
         self.playerNumber = playerNumber
         self.name = f"Player {playerNumber}"
@@ -273,7 +275,6 @@ class Player:
                     self.winPerc = 0
                     self.tiePerc = 0
                     self.update_player_info(winPerc=self.winPerc, tiePerc=self.tiePerc)
-                    print(f"W {self.winPerc} T {self.tiePerc}")
                 else:
                     self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png").convert("RGBA")
                     self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)

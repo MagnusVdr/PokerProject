@@ -1,27 +1,9 @@
 from tkinter import *
 from PIL import ImageTk, Image
-import platform
 
 from header import *
 from poker import *
-
-
-class DummySMBus:
-    def read_byte(self, addr):
-        return 0
-
-    def read_i2c_block_data(self, addr, cmd, length):
-        return [0] * length
-
-    def write_i2c_block_data(self, addr, cmd, data):
-        pass
-
-
-is_linux = platform.system() == "Linux"
-if is_linux:
-    from smbus2 import SMBus
-else:
-    SMBus = DummySMBus
+from I2C_reader import *
 
 
 def update_win_chance():
@@ -30,7 +12,7 @@ def update_win_chance():
     folded_hands = []
     for player in players:
         if player.hand[0] == 0 or player.hand[1] == 0:
-            continue;
+            continue
         if player.folded == 1:
             folded_hands.append([pokerCards[player.hand[0]], pokerCards[player.hand[1]]])
         else:
@@ -69,17 +51,6 @@ def simulate_players():
         fake_players.append(player)
 
 
-def scan_i2c_devices():
-    if not is_linux:
-        return
-    for i in range(10):
-        try:
-            bus.read_byte(player_addresses[i])
-            devices.append(i)
-        except IOError:
-            pass
-
-
 def initialize_players():
     for i in devices:
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
@@ -89,41 +60,12 @@ def initialize_players():
         players.append(player)
 
 
-def read_i2c():
-    if not is_linux:
-        return
-    for player in players:
-        try:
-            data_received = bus.read_i2c_block_data(player.address, 6, 6)
-            print(data_received)
-            player.update_player_info(hand=[data_received[1], data_received[2]], folded=data_received[3],
-                                      stack=(data_received[4] << 8) | data_received[5])
-        except OSError as e:
-            print(f"Error reading from I2C device at address {player.address}: {e}")
-
-
-def read_i2c_community():
-    if not is_linux:
-        return
-    try:
-        data_received = bus.read_i2c_block_data(community.address, 6, 6)
-        community.update(cards=[data_received[1], data_received[2], data_received[3], data_received[4], data_received[5]])
-    except OSError as e:
-        print(f"Error reading from I2C device at address {community.address}: {e}")
-
-
 def simulate_community():
     global community
     community = Community(110, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
                           CMYC5_y)
     community.update(cards=[49, 1, 35, 46, 0])
     community.place_widgets()
-
-
-def write_i2c():
-    for player in players:
-        data_to_send = []
-        bus.write_i2c_block_data(player.address, 0x00, data_to_send)
 
 
 def update_info():
