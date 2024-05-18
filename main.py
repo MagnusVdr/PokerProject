@@ -115,7 +115,7 @@ def simulate_community():
     global community
     community = Community(110, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
                           CMYC5_y)
-    community.update(cards=[49, 27, 35, 46, 0])
+    community.update(cards=[49, 1, 35, 46, 0])
     community.place_widgets()
 
 
