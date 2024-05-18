@@ -265,7 +265,7 @@ def setup():
 def loop():
     if timer_running:
         read_i2c(bus, players)
-        update_info()
+        #update_info()
         update_win_chance()
         root.after(1000, loop)
 
