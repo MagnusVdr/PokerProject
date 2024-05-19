@@ -93,7 +93,7 @@ def update_timer():
         # Format the time string
         time_str = f"{minutes:02d}:{seconds:02d}"
         update_poker_info(time_str)
-        if minutes == 0 and seconds == 0 and all_folded == 0:
+        if minutes == 0 and seconds == 0 and all_folded == 1:
             level += 1
             minutes = levminutes
             update_player_node_timers(bus, players, START_TIME)
