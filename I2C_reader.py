@@ -8,6 +8,9 @@ class DummySMBus:
     def read_i2c_block_data(self, addr, cmd, length):
         return [0] * length
 
+    def write_i2c_block_data(self, addr, cmd, length):
+        return [0] * length
+
 
 is_linux = platform.system() == "Linux"
 if is_linux:
@@ -45,7 +48,8 @@ def update_player_node_timers(bus, players, cmd, new_time=None):
             pass
 
 
-def update_player_bb_ante(bus, players):
+def update_player_bb_ante(bus, players, BB, ante):
+    data_to_send = [4, (BB >> 8) & 255, BB & 255, (ante >> 8) & 255, ante & 255]
     for player in players:
         try:
             bus.write_i2c_block_data(player.address, 0x00, data_to_send)
