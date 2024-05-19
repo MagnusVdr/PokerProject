@@ -1,3 +1,5 @@
+from time import sleep
+
 from header import *
 from poker import *
 from I2C_reader import *
@@ -81,7 +83,6 @@ def update_poker_info(time):
         text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: {time}")
 
 
-
 def update_timer():
     global minutes, seconds, timer_running, level
     if timer_running:
@@ -97,6 +98,7 @@ def update_timer():
             level += 1
             minutes = levminutes
             update_player_node_timers(bus, players, START_TIME)
+            sleep(0.001)
             update_player_bb_ante(bus, players, BBLevelValues[level], anteLevelValues[level])
         # If timer is not zero, continue updating
         if minutes > 0 or seconds > 0:
