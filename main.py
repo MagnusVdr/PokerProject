@@ -296,8 +296,14 @@ def loop():
         root.after(1000, loop)
 
 
+def debug():
+    print("Here")
+    root.after(4000, debug)
+
+
 setup()
 set_up_debug()
+debug()
 loop()
 
 # Start GUI main loop
