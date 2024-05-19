@@ -75,7 +75,6 @@ def read_i2c_community(bus, community):
         return
     try:
         data_received = bus.read_i2c_block_data(community.address, 0, 6)
-        print(data_received)
         if any(num > 52 for num in data_received):
             return
         community.update(cards=[data_received[1], data_received[2],
@@ -111,6 +110,7 @@ def read_i2c(bus, players):
     for player in players:
         try:
             data_received = bus.read_i2c_block_data(player.address, 6, 6)
+            print("read players data:")
             print(data_received)
             player.update_player_info(hand=[data_received[1], data_received[2]], folded=data_received[3],
                                       stack=(data_received[4] << 8) | data_received[5])
@@ -121,7 +121,6 @@ def read_i2c(bus, players):
 
 def write_community(bus, community, cmd):
     data_send = []
-    print(f"cmd is {cmd}")
     if cmd == 2:
         data_send = [cmd, 2]
     elif cmd == 1:

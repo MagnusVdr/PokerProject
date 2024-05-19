@@ -241,7 +241,6 @@ def keep_game_state(players, community, bus):
         for player in players:
             if player.folded == 1:
                 folds += 1
-        print(folds)
         if folds == len(players):
             print("Got to all folded")
             poker_game.all_folded = 1
@@ -289,6 +288,7 @@ def setup():
 
 def loop():
     if poker_game.timer_running:
+        print("Not stuck")
         read_i2c(bus, players)
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
