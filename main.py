@@ -100,6 +100,7 @@ def update_timer():
         update_poker_info(time_str)
         if minutes == 0 and seconds == 0:
             level += 1
+            minutes = levminutes
         # If timer is not zero, continue updating
         if minutes > 0 or seconds > 0:
             root.after(1000, update_timer)
@@ -190,8 +191,8 @@ def open_config_window():
 
 
 def save_config(time_entry, bb_entries, ante_entries):
-    global minutes
-    minutes = int(time_entry.get())
+    global levminutes
+    levminutes = int(time_entry.get())
     for i in range(10):
         BBLevelValues[i] = int(bb_entries[i].get())
         anteLevelValues[i] = int(ante_entries[i].get())
@@ -257,6 +258,7 @@ root = Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
+levminutes = 10
 minutes = 0  # Set the initial minutes here
 seconds = 0
 timer_running = False
