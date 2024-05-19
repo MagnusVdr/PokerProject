@@ -40,7 +40,10 @@ def update_player_node_timers(bus, players, cmd, new_time=None):
         print("Unknown command")
         return
     for player in players:
-        bus.write_i2c_block_data(player.address, 0x00, data_to_send)
+        try:
+            bus.write_i2c_block_data(player.address, 0x00, data_to_send)
+        except OSError:
+            pass
 
 
 def simulate_community(community):
