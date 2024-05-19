@@ -75,15 +75,11 @@ def initialize_players(devices):
         players.append(player)
 
 
-def update_info():
-    for player in players:
-        player.place_widgets()
-
-
 def update_poker_info(time):
     global poker_info_label
     poker_info_label.config(
         text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: {time}")
+
 
 
 def update_timer():
@@ -101,6 +97,7 @@ def update_timer():
             level += 1
             minutes = levminutes
             update_player_node_timers(bus, players, START_TIME)
+            update_player_bb_ante(bus, players, BBLevelValues[level], anteLevelValues[level])
         # If timer is not zero, continue updating
         if minutes > 0 or seconds > 0:
             root.after(1000, update_timer)
