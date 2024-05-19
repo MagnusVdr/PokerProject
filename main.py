@@ -113,7 +113,7 @@ def start_timer():
     timer_running = True
     update_timer()
     start_button.config(state=DISABLED)  # Disable the start button
-    update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, levminutes)
+    update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, new_time=levminutes)
     update_player_node_timers(bus, players, START_TIME)
     loop()
 
