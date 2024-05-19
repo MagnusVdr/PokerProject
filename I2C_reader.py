@@ -57,7 +57,6 @@ def update_player_bb_ante(bus, players, BB, ante):
             pass
 
 
-
 def simulate_community(community):
     community.update(cards=[49, 1, 35, 46, 0])
 
@@ -113,12 +112,15 @@ def read_i2c(bus, players):
 
 
 def write_community(bus, community, cmd):
+    data_send = []
     print(f"cmd is {cmd}")
     if cmd == 2:
-        data_send = [cmd, 2, 2, 0, 0, 0]
-        bus.write_i2c_block_data(community.address, 0x00, data_send)
+        data_send = [cmd, 2]
     elif cmd == 1:
-        data_send = [cmd, 1, 1, 0, 0, 0]
-        bus.write_i2c_block_data(community.address, 0x00, data_send)
+        data_send = [cmd, 1]
     else:
         print("Unknown command")
+    try:
+        bus.write_i2c_block_data(community.address, 0x00, data_send)
+    except OSError as e:
+        pass
