@@ -285,11 +285,11 @@ def setup():
 
 def loop():
     if timer_running:
-        #read_i2c(bus, players)
+        read_i2c(bus, players)
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
         update_win_chance()
-        root.after(500, loop)
+        root.after(1000, loop)
 
 
 setup()
