@@ -112,6 +112,7 @@ def start_timer():
     start_button.config(state=DISABLED)  # Disable the start button
     update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, new_time=levminutes)
     update_player_node_timers(bus, players, START_TIME)
+    update_player_bb_ante(bus, players, BBLevelValues[level], anteLevelValues[level])
     loop()
 
 
@@ -277,7 +278,7 @@ players = []
 BBLevelValues = [1] * 10
 anteLevelValues = [1] * 10
 community = None
-all_folded = 1
+all_folded = 0
 last_win_chances = []
 
 
