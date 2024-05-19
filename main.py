@@ -88,7 +88,7 @@ def update_poker_info(time):
 
 
 def update_timer():
-    global minutes, seconds, timer_running
+    global minutes, seconds, timer_running, level
     if timer_running:
         if seconds > 0:
             seconds -= 1
@@ -98,6 +98,8 @@ def update_timer():
         # Format the time string
         time_str = f"{minutes:02d}:{seconds:02d}"
         update_poker_info(time_str)
+        if minutes == 0 and seconds == 0:
+            level += 1
         # If timer is not zero, continue updating
         if minutes > 0 or seconds > 0:
             root.after(1000, update_timer)
