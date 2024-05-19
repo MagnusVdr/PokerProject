@@ -231,7 +231,7 @@ def keep_game_state(players, community, bus):
         if un_folds == len(players):
             print("Got to all un_folded")
             all_folded = 0
-            write_community(bus, community, DRAW)
+            write_community(bus, community, 1)
     else:
         for player in players:
             if player.folded == 1:
@@ -240,7 +240,7 @@ def keep_game_state(players, community, bus):
         if folds == len(players):
             print("Got to all folded")
             all_folded = 1
-            write_community(bus, community, DELE)
+            write_community(bus, community, 2)
 
 
 if is_linux:
