@@ -29,13 +29,12 @@ DELE = 2
 
 
 def update_player_node_timers(bus, players, cmd, new_time=None):
-    data_to_send = []
     if cmd == START_TIME:
-        data_to_send = [START_TIME, 0, 0, 0, 0]
+        data_to_send = [START_TIME, 0]
     elif cmd == PAUSE_TIME:
-        data_to_send = [PAUSE_TIME, 0, 0, 0, 0]
+        data_to_send = [PAUSE_TIME, 0]
     elif cmd == SET_NEW_TIMER_TIME:
-        data_to_send = [SET_NEW_TIMER_TIME, new_time, 0, 0, 0]
+        data_to_send = [SET_NEW_TIMER_TIME, new_time]
     else:
         print("Unknown command")
         return
@@ -44,6 +43,15 @@ def update_player_node_timers(bus, players, cmd, new_time=None):
             bus.write_i2c_block_data(player.address, 0x00, data_to_send)
         except OSError:
             pass
+
+
+def update_player_bb_ante(bus, players):
+    for player in players:
+        try:
+            bus.write_i2c_block_data(player.address, 0x00, data_to_send)
+        except OSError:
+            pass
+
 
 
 def simulate_community(community):
