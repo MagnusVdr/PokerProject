@@ -245,13 +245,14 @@ class Player:
 
         if hand is not None:
             if self.hand != hand:
-                self.hand = hand
-                self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
-                self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
-                self.card1Label.config(image=self.card1ImageGui)
-                self.card2Image = Image.open("Images/" + pokerCards[self.hand[1]] + ".png")
-                self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
-                self.card2Label.config(image=self.card2ImageGui)
+                if hand[0] <= 52 and hand[1] <= 52:
+                    self.hand = hand
+                    self.card1Image = Image.open("Images/" + pokerCards[self.hand[0]] + ".png")
+                    self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
+                    self.card1Label.config(image=self.card1ImageGui)
+                    self.card2Image = Image.open("Images/" + pokerCards[self.hand[1]] + ".png")
+                    self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
+                    self.card2Label.config(image=self.card2ImageGui)
 
         if stack is not None:
             if self.stack != stack:
@@ -324,22 +325,23 @@ class Community:
 
     def update(self, cards):
         if self.cards != cards:
-            self.cards = cards
-            self.card1Image = Image.open("Images/" + pokerCards[self.cards[0]] + ".png")
-            self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
-            self.card1Label.config(image=self.card1ImageGui)
-            self.card2Image = Image.open("Images/" + pokerCards[self.cards[1]] + ".png")
-            self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
-            self.card2Label.config(image=self.card2ImageGui)
-            self.card3Image = Image.open("Images/" + pokerCards[self.cards[2]] + ".png")
-            self.card3ImageGui = ImageTk.PhotoImage(self.card3Image)
-            self.card3Label.config(image=self.card3ImageGui)
-            self.card4Image = Image.open("Images/" + pokerCards[self.cards[3]] + ".png")
-            self.card4ImageGui = ImageTk.PhotoImage(self.card4Image)
-            self.card4Label.config(image=self.card4ImageGui)
-            self.card5Image = Image.open("Images/" + pokerCards[self.cards[4]] + ".png")
-            self.card5ImageGui = ImageTk.PhotoImage(self.card5Image)
-            self.card5Label.config(image=self.card5ImageGui)
+            if cards[0] <= 52 and cards[1] <= 52 and cards[2] <= 52 and cards[3] <= 52 and cards[4] <= 52:
+                self.cards = cards
+                self.card1Image = Image.open("Images/" + pokerCards[self.cards[0]] + ".png")
+                self.card1ImageGui = ImageTk.PhotoImage(self.card1Image)
+                self.card1Label.config(image=self.card1ImageGui)
+                self.card2Image = Image.open("Images/" + pokerCards[self.cards[1]] + ".png")
+                self.card2ImageGui = ImageTk.PhotoImage(self.card2Image)
+                self.card2Label.config(image=self.card2ImageGui)
+                self.card3Image = Image.open("Images/" + pokerCards[self.cards[2]] + ".png")
+                self.card3ImageGui = ImageTk.PhotoImage(self.card3Image)
+                self.card3Label.config(image=self.card3ImageGui)
+                self.card4Image = Image.open("Images/" + pokerCards[self.cards[3]] + ".png")
+                self.card4ImageGui = ImageTk.PhotoImage(self.card4Image)
+                self.card4Label.config(image=self.card4ImageGui)
+                self.card5Image = Image.open("Images/" + pokerCards[self.cards[4]] + ".png")
+                self.card5ImageGui = ImageTk.PhotoImage(self.card5Image)
+                self.card5Label.config(image=self.card5ImageGui)
 
 
 class GameState:
