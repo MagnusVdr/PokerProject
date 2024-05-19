@@ -27,7 +27,7 @@ SET_NEW_TIME = 3
 """"""""""""""""""""""""
 """Node Macros"""
 DRAW = 1
-DELETE = 0
+DELE = 0
 """"""""""""""""""""""""
 
 
@@ -94,7 +94,7 @@ def read_i2c(bus, players):
 
 
 def write_community(bus, community, cmd):
-    if cmd == DELETE:
+    if cmd == DELE:
         bus.write_i2c_block_data(community.address, 0x00, [cmd, 0, 0, 0, 0, 0])
     if cmd == DRAW:
         bus.write_i2c_block_data(community.address, 0x00, [cmd, 1, 0, 0, 0, 0])

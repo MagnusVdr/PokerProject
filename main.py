@@ -241,7 +241,7 @@ def keep_game_state(players, community, bus):
         print(folds)
         if folds == len(players):
             all_folded = 1
-            write_community(bus, community, DELETE)
+            write_community(bus, community, DELE)
 
 
 if is_linux:
