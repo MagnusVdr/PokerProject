@@ -52,7 +52,7 @@ def read_i2c_community(bus, community):
         simulate_community(community)
         return
     try:
-        data_received = bus.read_i2c_block_data(community.address, 6, 6)
+        data_received = bus.read_i2c_block_data(community.address, 2, 6)
         print(data_received)
         if any(num > 52 for num in data_received):
             return
