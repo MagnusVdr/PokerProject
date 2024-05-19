@@ -31,11 +31,11 @@ DELE = 2
 def update_player_node_timers(bus, players, cmd, new_time=None):
     data_to_send = []
     if cmd == START_TIME:
-        data_to_send = [START_TIME, 0]
+        data_to_send = [START_TIME, 0, 0, 0, 0]
     elif cmd == PAUSE_TIME:
-        data_to_send = [PAUSE_TIME, 0]
+        data_to_send = [PAUSE_TIME, 0, 0, 0, 0]
     elif cmd == SET_NEW_TIMER_TIME:
-        data_to_send = [SET_NEW_TIMER_TIME, new_time]
+        data_to_send = [SET_NEW_TIMER_TIME, new_time, 0, 0, 0]
     else:
         print("Unknown command")
         return
