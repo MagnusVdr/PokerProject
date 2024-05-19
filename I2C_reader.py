@@ -44,7 +44,6 @@ def update_player_node_timers(bus, players, cmd, new_time=None):
 
 def simulate_community(community):
     community.update(cards=[49, 1, 35, 46, 0])
-    community.place_widgets()
 
 
 def read_i2c_community(bus, community):
@@ -58,10 +57,11 @@ def read_i2c_community(bus, community):
             return
         community.update(cards=[data_received[1], data_received[2],
                                 data_received[3], data_received[4], data_received[5]])
-        community.place_widgets()
 
     except OSError as e:
-        print(f"Error reading from I2C device at address {community.address}: {e}")
+        simulate_community(community)
+        pass
+        # print(f"Error reading from I2C device at address {community.address}: {e}")
 
 
 def scan_i2c_devices(bus):

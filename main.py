@@ -191,8 +191,9 @@ def open_config_window():
 
 
 def save_config(time_entry, bb_entries, ante_entries):
-    global levminutes
-    levminutes = int(time_entry.get())
+    global levminutes, minutes
+    minutes = int(time_entry.get())
+    levminutes = minutes
     for i in range(10):
         BBLevelValues[i] = int(bb_entries[i].get())
         anteLevelValues[i] = int(ante_entries[i].get())
@@ -205,19 +206,20 @@ def save_config(time_entry, bb_entries, ante_entries):
 
 
 def read_config():
-    global minutes, BBLevelValues, anteLevelValues
+    global minutes, levminutes, BBLevelValues, anteLevelValues
     try:
         with open('config.txt', 'r') as file:
             lines = file.readlines()
             # Extracting minutes from the first line
             minutes = int(lines[0].split(': ')[1])
+            levminutes = minutes
             for i in range(10):
                 # Extracting BB and ante values from subsequent lines
                 BBLevelValues[i] = int(lines[2*i + 1].split(': ')[1])
                 anteLevelValues[i] = int(lines[2*i + 2].split(': ')[1])
     except FileNotFoundError:
         # Default values if config file is not found
-        minutes = 10
+        levminutes = 10
         BBLevelValues = [1] * 10
         anteLevelValues = [1] * 10
 
@@ -243,6 +245,13 @@ def keep_game_state(players, community, bus):
             print("Got to all folded")
             all_folded = 1
             write_community(bus, community, 2)
+
+
+def set_up_community():
+    global community
+    community = Community(85, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
+                          CMYC5_y)
+    community.place_widgets()
 
 
 if is_linux:
@@ -272,13 +281,11 @@ last_win_chances = []
 
 
 def setup():
-    global community
     read_config()
     create_gui()
     update_timer()
     devices = scan_i2c_devices(bus)
-    community = Community(85, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
-                          CMYC5_y)
+    set_up_community()
     if is_linux:
         initialize_players(devices)
     else:
@@ -293,7 +300,7 @@ def loop():
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
         update_win_chance()
-        root.after(3000, loop)
+        root.after(1000, loop)
 
 
 setup()
