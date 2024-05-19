@@ -109,7 +109,7 @@ def update_timer():
 
 
 def start_timer():
-    global timer_running
+    global timer_running, levminutes
     timer_running = True
     update_timer()
     start_button.config(state=DISABLED)  # Disable the start button
