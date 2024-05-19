@@ -229,6 +229,7 @@ def keep_game_state(players, community, bus):
             if player.folded == 1:
                 un_folds += 1
         if un_folds == len(players):
+            print("Got to all folded")
             all_folded = 0
             write_community(bus, community, DRAW)
     else:
