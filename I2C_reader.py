@@ -77,6 +77,11 @@ def scan_i2c_devices(bus):
             connected_devices.append(i)
         except IOError:
             pass
+
+    try:
+        bus.read_byte(110)
+    except IOError:
+        pass
     return connected_devices
 
 
