@@ -29,6 +29,7 @@ DELE = 2
 
 
 def update_player_node_timers(bus, players, cmd, new_time=None):
+    data_to_send = []
     if cmd == START_TIME:
         data_to_send = [START_TIME, 0]
     elif cmd == PAUSE_TIME:
