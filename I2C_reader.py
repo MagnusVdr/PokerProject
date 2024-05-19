@@ -27,7 +27,7 @@ SET_NEW_TIME = 3
 """"""""""""""""""""""""
 """Node Macros"""
 DRAW = 1
-DELE = 0
+DELE = 2
 """"""""""""""""""""""""
 
 
@@ -61,6 +61,7 @@ def read_i2c_community(bus, community):
             if community.cards[i - 1] != data_received[i]:
                 community.update(cards=[data_received[1], data_received[2],
                                         data_received[3], data_received[4], data_received[5]])
+        community.place_widgets()
 
     except OSError as e:
         print(f"Error reading from I2C device at address {community.address}: {e}")
@@ -95,7 +96,7 @@ def read_i2c(bus, players):
 
 def write_community(bus, community, cmd):
     if cmd == DELE:
-        bus.write_i2c_block_data(community.address, 0x00, [cmd, 0, 0, 0, 0, 0])
+        bus.write_i2c_block_data(community.address, 0x00, [cmd, 2, 0, 0, 0, 0])
     if cmd == DRAW:
         bus.write_i2c_block_data(community.address, 0x00, [cmd, 1, 0, 0, 0, 0])
     else:

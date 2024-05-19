@@ -225,21 +225,20 @@ def keep_game_state(players, community, bus):
     folds = 0
     un_folds = 0
     if all_folded == 1:
-        print(f"fold")
         for player in players:
             if player.folded == 0:
                 un_folds += 1
         if un_folds == len(players):
-            print("Got to all folded")
+            print("Got to all un_folded")
             all_folded = 0
             write_community(bus, community, DRAW)
     else:
         for player in players:
             if player.folded == 1:
                 folds += 1
-        print("folds:")
         print(folds)
         if folds == len(players):
+            print("Got to all folded")
             all_folded = 1
             write_community(bus, community, DELE)
 
@@ -280,7 +279,8 @@ def setup():
     if is_linux:
         initialize_players(devices)
     else:
-        simulate_community(community)
+        pass
+        #simulate_community(community)
     simulate_players()
 
 
