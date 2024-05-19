@@ -8,8 +8,8 @@ class DummySMBus:
     def read_i2c_block_data(self, addr, cmd, length):
         return [0] * length
 
-    def write_i2c_block_data(self, addr, cmd, length):
-        return [0] * length
+    def write_i2c_block_data(self, addr, cmd):
+        return
 
 
 is_linux = platform.system() == "Linux"

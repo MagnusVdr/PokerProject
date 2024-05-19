@@ -261,7 +261,7 @@ if is_linux:
     except FileNotFoundError:
         print("I2C bus not found.")
 else:
-    bus = None
+    bus = SMBus
 # Initialize timer variables
 
 root = Tk()
