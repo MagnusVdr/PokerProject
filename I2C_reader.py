@@ -1,7 +1,5 @@
 import platform
 
-player_addresses = [18, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-
 
 class DummySMBus:
     def read_byte(self, addr):
@@ -17,10 +15,12 @@ if is_linux:
 else:
     SMBus = DummySMBus
 
-"""Timer Macros"""
-START = 1
-PAUSE = 2
-SET_NEW_TIME = 3
+player_addresses = [18, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+
+"""I2C commands"""
+START_TIME = 1
+PAUSE_TIME = 2
+SET_NEW_TIMER_TIME = 3
 """"""""""""""""""""""""
 """Node Macros"""
 DRAW = 1
@@ -29,12 +29,12 @@ DELE = 2
 
 
 def update_player_node_timers(bus, players, cmd, new_time=None):
-    if cmd == START:
-        data_to_send = [START, 0]
-    elif cmd == PAUSE:
-        data_to_send = [PAUSE, 0]
-    elif cmd == SET_NEW_TIME:
-        data_to_send = [SET_NEW_TIME, new_time]
+    if cmd == START_TIME:
+        data_to_send = [START_TIME, 0]
+    elif cmd == PAUSE_TIME:
+        data_to_send = [PAUSE_TIME, 0]
+    elif cmd == SET_NEW_TIMER_TIME:
+        data_to_send = [SET_NEW_TIMER_TIME, new_time]
     else:
         print("Unknown command")
         return

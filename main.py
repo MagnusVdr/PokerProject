@@ -64,6 +64,9 @@ def simulate_players():
 
 
 def initialize_players(devices):
+    if not is_linux:
+        # simulate_community(community)
+        return
     for i in devices:
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
                         cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9], cords[i][10],
@@ -75,10 +78,6 @@ def initialize_players(devices):
 def update_info():
     for player in players:
         player.place_widgets()
-
-
-def update_gui():
-    pass
 
 
 def update_poker_info(time):
@@ -98,9 +97,10 @@ def update_timer():
         # Format the time string
         time_str = f"{minutes:02d}:{seconds:02d}"
         update_poker_info(time_str)
-        if minutes == 0 and seconds == 0:
+        if minutes == 0 and seconds == 0 and all_folded == 0:
             level += 1
             minutes = levminutes
+            update_player_node_timers(bus, players, START_TIME)
         # If timer is not zero, continue updating
         if minutes > 0 or seconds > 0:
             root.after(1000, update_timer)
@@ -113,6 +113,8 @@ def start_timer():
     timer_running = True
     update_timer()
     start_button.config(state=DISABLED)  # Disable the start button
+    update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, levminutes)
+    update_player_node_timers(bus, players, START_TIME)
     loop()
 
 
@@ -122,10 +124,12 @@ def pause_timer():
     if timer_running:
         timer_running = False
         pause_button.config(text="Continue")
+        update_player_node_timers(bus, players, PAUSE_TIME)
     else:
         timer_running = True
         pause_button.config(text="Pause")
         update_timer()
+        update_player_node_timers(bus, players, START_TIME)
 
 
 def create_gui():
@@ -281,17 +285,13 @@ last_win_chances = []
 
 
 def setup():
+    devices = scan_i2c_devices(bus)
     read_config()
     create_gui()
-    update_timer()
-    devices = scan_i2c_devices(bus)
-    set_up_community()
-    if is_linux:
-        initialize_players(devices)
-    else:
-        pass
-        #simulate_community(community)
+    initialize_players(devices)
     simulate_players()
+    update_timer()
+    set_up_community()
 
 
 def loop():
