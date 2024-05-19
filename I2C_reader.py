@@ -97,8 +97,9 @@ def read_i2c(bus, players):
 def write_community(bus, community, cmd):
     print(f"cmd is {cmd}")
     if cmd == 2:
-        bus.write_i2c_block_data(community.address, 0x00, [cmd, 2, 2, 0, 0, 0])
-    if cmd == 1:
+        data_send = [cmd, 2, 2, 0, 0, 0]
+        bus.write_i2c_block_data(community.address, 0x00, data_send)
+    elif cmd == 1:
         data_send = [cmd, 1, 1, 0, 0, 0]
         bus.write_i2c_block_data(community.address, 0x00, data_send)
     else:
