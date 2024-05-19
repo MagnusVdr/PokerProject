@@ -1,6 +1,6 @@
 import platform
 
-player_addresses = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+player_addresses = [18, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
 
 class DummySMBus:

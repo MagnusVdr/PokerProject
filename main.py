@@ -117,7 +117,6 @@ def pause_timer():
     global timer_running
 
     if timer_running:
-        print("got here")
         timer_running = False
         pause_button.config(text="Continue")
     else:
@@ -274,7 +273,7 @@ def setup():
     create_gui()
     update_timer()
     devices = scan_i2c_devices(bus)
-    community = Community(110, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
+    community = Community(85, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
                           CMYC5_y)
     if is_linux:
         initialize_players(devices)
