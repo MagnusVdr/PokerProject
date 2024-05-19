@@ -225,8 +225,9 @@ def keep_game_state(players, community, bus):
     folds = 0
     un_folds = 0
     if all_folded == 1:
+        print(f"fold")
         for player in players:
-            if player.folded == 1:
+            if player.folded == 0:
                 un_folds += 1
         if un_folds == len(players):
             print("Got to all folded")
