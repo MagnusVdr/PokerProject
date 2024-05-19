@@ -341,3 +341,22 @@ class Community:
             self.card5ImageGui = ImageTk.PhotoImage(self.card5Image)
             self.card5Label.config(image=self.card5ImageGui)
 
+
+class GameState:
+    def __init__(self):
+        self.level = 0
+        self.level_length = 10
+        self.timer_minutes = 0  # Set the initial minutes here
+        self.timer_seconds = 0
+        self.timer_running = False
+        self.bb_values = [1] * 10
+        self.ante_values = [1] * 10
+        self.all_folded = 0
+        self.everyone_all_in = 0
+        self.poker_info_label = str()
+
+    def current_bb(self):
+        return self.bb_values[self.level]
+
+    def current_ante(self):
+        return self.ante_values[self.level]

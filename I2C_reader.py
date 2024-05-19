@@ -31,6 +31,14 @@ DELE = 2
 """"""""""""""""""""""""
 
 
+def update_player_node_win_chance(bus, player, win_chance):
+    data_to_send = [5, win_chance, win_chance]
+    try:
+        bus.write_i2c_block_data(player.address, 0x00, data_to_send)
+    except OSError:
+        pass
+
+
 def update_player_node_timers(bus, players, cmd, new_time=None):
     if cmd == START_TIME:
         data_to_send = [START_TIME, 0]

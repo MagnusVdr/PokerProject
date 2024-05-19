@@ -51,6 +51,8 @@ def update_win_chance():
         return
     for i, player in enumerate(not_folded_players):
         player.update_player_info(winPerc=win_chances[i], tiePerc=tie_chances[i])
+        if poker_game.everyone_all_in:
+            update_player_node_win_chance(bus, player, win_chances[i])
 
 
 def simulate_players():
@@ -78,55 +80,55 @@ def initialize_players(devices):
 def update_poker_info(time):
     global poker_info_label
     poker_info_label.config(
-        text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: {time}")
+        text=f"Level: {poker_game.level} | BB: {poker_game.current_bb()} | Ante: {poker_game.current_bb()} | Time: {time}")
 
 
 def update_timer():
-    global minutes, seconds, timer_running, level
-    if timer_running:
-        if seconds > 0:
-            seconds -= 1
-        elif minutes > 0:
-            minutes -= 1
-            seconds = 59
+    if poker_game.timer_running:
+        if poker_game.timer_seconds > 0:
+            poker_game.timer_seconds -= 1
+        elif poker_game.timer_minutes > 0:
+            poker_game.timer_minutes -= 1
+            poker_game.timer_seconds = 59
         # Format the time string
-        time_str = f"{minutes:02d}:{seconds:02d}"
+        time_str = f"{poker_game.timer_minutes:02d}:{poker_game.timer_seconds:02d}"
         update_poker_info(time_str)
-        if minutes == 0 and seconds == 0 and all_folded == 1 and level < 10:
-            level += 1
-            minutes = levminutes
+        if poker_game.timer_minutes == 0 and poker_game.timer_seconds == 0 and poker_game.all_folded == 1 and poker_game.level < 10:
+            poker_game.level += 1
+            poker_game.timer_minutes = poker_game.level_length
             update_player_node_timers(bus, players, START_TIME)
-            update_player_bb_ante(bus, players, BBLevelValues[level], anteLevelValues[level])
+            update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
         # If timer is not zero, continue updating
-        if minutes > 0 or seconds > 0:
+        if poker_game.timer_minutes > 0 or poker_game.timer_seconds > 0:
             root.after(1000, update_timer)
         else:
-            timer_running = False
+            poker_game.timer_running = False
 
 
 def start_timer():
-    global timer_running, levminutes
-    timer_running = True
+    poker_game.timer_running = True
     update_timer()
     start_button.config(state=DISABLED)  # Disable the start button
-    update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, new_time=levminutes)
+    update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, new_time=poker_game.level_length)
     update_player_node_timers(bus, players, START_TIME)
-    update_player_bb_ante(bus, players, BBLevelValues[level], anteLevelValues[level])
+    update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
     loop()
 
 
 def pause_timer():
-    global timer_running
-
-    if timer_running:
-        timer_running = False
+    if poker_game.timer_running:
+        poker_game.timer_running = False
         pause_button.config(text="Continue")
         update_player_node_timers(bus, players, PAUSE_TIME)
     else:
-        timer_running = True
+        poker_game.timer_running = True
         pause_button.config(text="Pause")
         update_timer()
         update_player_node_timers(bus, players, START_TIME)
+
+
+def all_in_activate():
+    poker_game.everyone_all_in = 1
 
 
 def create_gui():
@@ -146,7 +148,7 @@ def create_gui():
     # Label for BB, ante, timer
     global poker_info_label
     poker_info_label = Label(root,
-                             text=f"Level: {level} | BB: {BBLevelValues[level]} | Ante: {anteLevelValues[level]} | Time: 00:00",
+                             text=f"Level: {poker_game.level} | BB: {poker_game.current_bb()} | Ante: {poker_game.current_ante()} | Time: 00:00",
                              font=("Arial", 20), fg="black")
     poker_info_label.place(relx=1, rely=0, anchor="ne")
 
@@ -160,6 +162,9 @@ def create_gui():
     close_button = Button(root, text="Close Application", command=root.quit)
     close_button.place(x=0, y=140)
 
+    all_in_button = Button(root, text="All in", command=all_in_activate)
+    all_in_button.place(x=0, y=200)
+
 
 def open_config_window():
 
@@ -172,19 +177,19 @@ def open_config_window():
     Label(config_window, text="Time between levels (minutes):").grid(row=0, column=0)
     time_entry = Entry(config_window)
     time_entry.grid(row=0, column=1)
-    time_entry.insert(0, str(minutes))
+    time_entry.insert(0, str(poker_game.timer_minutes))
 
     for i in range(10):
         Label(config_window, text=f"Lev {i + 1} BB:").grid(row=i * 2 + 1, column=0)
         entry = Entry(config_window)
         entry.grid(row=i * 2 + 1, column=1)
-        entry.insert(0, str(BBLevelValues[i]))
+        entry.insert(0, str(poker_game.bb_values[i]))
         BBEntries.append(entry)
 
         Label(config_window, text=f"Lev {i + 1} Ante:").grid(row=i * 2 + 2, column=0)
         entry = Entry(config_window)
         entry.grid(row=i * 2 + 2, column=1)
-        entry.insert(0, str(anteLevelValues[i]))
+        entry.insert(0, str(poker_game.ante_values[i]))
         anteEntries.append(entry)
 
     Button(config_window, text="Save", command=lambda: save_config(time_entry, BBEntries, anteEntries)).grid(row=21,
@@ -192,50 +197,45 @@ def open_config_window():
 
 
 def save_config(time_entry, bb_entries, ante_entries):
-    global levminutes, minutes
-    minutes = int(time_entry.get())
-    levminutes = minutes
+    poker_game.timer_minutes = int(time_entry.get())
+    poker_game.level_length = poker_game.timer_minutes
     for i in range(10):
-        BBLevelValues[i] = int(bb_entries[i].get())
-        anteLevelValues[i] = int(ante_entries[i].get())
+        poker_game.bb_values[i] = int(bb_entries[i].get())
+        poker_game.ante_values[i] = int(ante_entries[i].get())
 
     with open('config.txt', 'w') as file:
-        file.write(f"Level time in minutes: {minutes}\n")
+        file.write(f"Level time in minutes: {poker_game.timer_minutes}\n")
         for i in range(10):
-            file.write(f"Level {i + 1} BB: {BBLevelValues[i]}\n")
-            file.write(f"Level {i + 1} ante: {anteLevelValues[i]}\n")
+            file.write(f"Level {i + 1} BB: {poker_game.bb_values[i]}\n")
+            file.write(f"Level {i + 1} ante: {poker_game.ante_values[i]}\n")
 
 
 def read_config():
-    global minutes, levminutes, BBLevelValues, anteLevelValues
     try:
         with open('config.txt', 'r') as file:
             lines = file.readlines()
             # Extracting minutes from the first line
-            minutes = int(lines[0].split(': ')[1])
-            levminutes = minutes
+            poker_game.timer_minutes = int(lines[0].split(': ')[1])
+            poker_game.level_length = poker_game.timer_minutes
             for i in range(10):
                 # Extracting BB and ante values from subsequent lines
-                BBLevelValues[i] = int(lines[2*i + 1].split(': ')[1])
-                anteLevelValues[i] = int(lines[2*i + 2].split(': ')[1])
+                poker_game.bb_values[i] = int(lines[2*i + 1].split(': ')[1])
+                poker_game.ante_values[i] = int(lines[2*i + 2].split(': ')[1])
     except FileNotFoundError:
         # Default values if config file is not found
-        levminutes = 10
-        BBLevelValues = [1] * 10
-        anteLevelValues = [1] * 10
+        pass
 
 
 def keep_game_state(players, community, bus):
-    global all_folded
     folds = 0
     un_folds = 0
-    if all_folded == 1:
+    if poker_game.all_folded == 1:
         for player in players:
             if player.folded == 0:
                 un_folds += 1
         if un_folds == len(players):
             print("Got to all un_folded")
-            all_folded = 0
+            poker_game.all_folded = 0
             write_community(bus, community, 1)
     else:
         for player in players:
@@ -244,7 +244,8 @@ def keep_game_state(players, community, bus):
         print(folds)
         if folds == len(players):
             print("Got to all folded")
-            all_folded = 1
+            poker_game.all_folded = 1
+            poker_game.everyone_all_in = 0
             write_community(bus, community, 2)
 
 
@@ -268,16 +269,9 @@ root = Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
-levminutes = 10
-minutes = 0  # Set the initial minutes here
-seconds = 0
-timer_running = False
-level = 0
+poker_game = GameState()
 players = []
-BBLevelValues = [1] * 10
-anteLevelValues = [1] * 10
 community = None
-all_folded = 0
 last_win_chances = []
 
 
@@ -292,7 +286,7 @@ def setup():
 
 
 def loop():
-    if timer_running:
+    if poker_game.timer_running:
         read_i2c(bus, players)
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
