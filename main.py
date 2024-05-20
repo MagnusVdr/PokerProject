@@ -244,6 +244,7 @@ def keep_game_state(players, community, bus):
             print("Got to all folded ///////////////////////////////////////////////")
             poker_game.all_folded = 1
             poker_game.everyone_all_in = 0
+            poker_game.timer_running = True
             write_community(bus, community, 2)
             for player in players:
                 update_player_node_win_chance(bus, player, -1)
