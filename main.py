@@ -90,26 +90,22 @@ def update_timer():
         elif poker_game.timer_minutes > 0:
             poker_game.timer_minutes -= 1
             poker_game.timer_seconds = 59
-        # Format the time string
+        else:
+            if poker_game.all_folded == 1 and poker_game.level < 10:
+                poker_game.level += 1
+                poker_game.timer_minutes = poker_game.level_length
+                update_player_node_timers(bus, players, START_TIME)
+                update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
+            else:
+                poker_game.timer_running = False
         time_str = f"{poker_game.timer_minutes:02d}:{poker_game.timer_seconds:02d}"
         update_poker_info(time_str)
-        if poker_game.timer_minutes == 0 and poker_game.timer_seconds == 0 and poker_game.all_folded == 1 and poker_game.level < 10:
-            poker_game.level += 1
-            poker_game.timer_minutes = poker_game.level_length
-            update_player_node_timers(bus, players, START_TIME)
-            update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
-        # If timer is not zero, continue updating
-        if poker_game.timer_minutes > 0 or poker_game.timer_seconds > 0:
-            poker_game.timer_running = True
-        else:
-            poker_game.timer_running = False
     root.after(1000, update_timer)
 
 
 def start_timer():
     poker_game.timer_running = True
     poker_game.game_running = True
-    update_timer()
     start_button.config(state=DISABLED)  # Disable the start button
     update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, new_time=poker_game.level_length)
     update_player_node_timers(bus, players, START_TIME)
