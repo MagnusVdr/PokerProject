@@ -100,19 +100,20 @@ def update_timer():
             update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
         # If timer is not zero, continue updating
         if poker_game.timer_minutes > 0 or poker_game.timer_seconds > 0:
-            root.after(1000, update_timer)
+            poker_game.timer_running = True
         else:
             poker_game.timer_running = False
+    root.after(1000, update_timer)
 
 
 def start_timer():
     poker_game.timer_running = True
+    poker_game.game_running = True
     update_timer()
     start_button.config(state=DISABLED)  # Disable the start button
     update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, new_time=poker_game.level_length)
     update_player_node_timers(bus, players, START_TIME)
     update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
-    loop()
 
 
 def pause_timer():
@@ -125,7 +126,6 @@ def pause_timer():
         poker_game.timer_running = True
         poker_game.game_running = True
         pause_button.config(text="Pause")
-        update_timer()
         update_player_node_timers(bus, players, START_TIME)
 
 
@@ -295,7 +295,8 @@ def loop():
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
         update_win_chance()
-        root.after(1000, loop)
+
+    root.after(1000, loop)
 
 
 def debug():
