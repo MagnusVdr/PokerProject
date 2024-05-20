@@ -351,6 +351,7 @@ class GameState:
         self.timer_minutes = 0  # Set the initial minutes here
         self.timer_seconds = 0
         self.timer_running = False
+        self.game_running = True
         self.bb_values = [1] * 10
         self.ante_values = [1] * 10
         self.all_folded = 0

@@ -118,10 +118,12 @@ def start_timer():
 def pause_timer():
     if poker_game.timer_running:
         poker_game.timer_running = False
+        poker_game.game_running = False
         pause_button.config(text="Continue")
         update_player_node_timers(bus, players, PAUSE_TIME)
     else:
         poker_game.timer_running = True
+        poker_game.game_running = True
         pause_button.config(text="Pause")
         update_timer()
         update_player_node_timers(bus, players, START_TIME)
@@ -288,7 +290,7 @@ def setup():
 
 
 def loop():
-    if poker_game.timer_running:
+    if poker_game.game_running:
         read_i2c(bus, players)
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
