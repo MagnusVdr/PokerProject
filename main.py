@@ -91,7 +91,7 @@ def update_timer():
             poker_game.timer_minutes -= 1
             poker_game.timer_seconds = 59
         else:
-            if poker_game.all_folded == 1 and poker_game.level < 10:
+            if poker_game.all_folded == 1 and poker_game.level < 9:
                 poker_game.level += 1
                 poker_game.timer_minutes = poker_game.level_length
                 update_player_node_timers(bus, players, START_TIME)
