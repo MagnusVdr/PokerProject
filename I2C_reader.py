@@ -66,7 +66,7 @@ def update_player_bb_ante(bus, players, BB, ante):
 
 
 def simulate_community(community):
-    community.update(cards=[49, 1, 35, 46, 0])
+    community.update(cards=[49, 1, 35, 0, 0])
 
 
 def read_i2c_community(bus, community):
