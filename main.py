@@ -295,7 +295,7 @@ def loop():
         keep_game_state(players, community, bus)
         update_win_chance()
 
-    root.after(100, loop)
+    root.after(1000, loop)
 
 
 setup()

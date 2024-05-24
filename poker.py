@@ -2,6 +2,7 @@ from treys import Deck, Evaluator, Card
 
 
 def calculate_win_percentages(player_hands, community_cards, folded_hands):
+    print("calculating win")
     evaluator = Evaluator()
 
     player_hands_treys = []
