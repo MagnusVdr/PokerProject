@@ -299,7 +299,7 @@ def loop():
 
 
 setup()
-#set_up_debug()
+set_up_debug()
 loop()
 
 # Start GUI main loop
