@@ -60,7 +60,7 @@ def simulate_players():
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
                         cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9], cords[i][10],
                         cords[i][11])
-        player.update_player_info(hand=[i * 3, i * 3 + 1], folded= i % 2)
+        player.update_player_info(hand=[i * 3, i * 3 + 1], folded=i % 2)
         player.place_widgets()
         players.append(player)
 
@@ -282,6 +282,7 @@ def setup():
     read_config()
     create_gui()
     initialize_players(devices)
+    # simulate players not in actual project, only for demo
     simulate_players()
     update_timer()
     set_up_community()
@@ -294,17 +295,11 @@ def loop():
         keep_game_state(players, community, bus)
         update_win_chance()
 
-    root.after(1000, loop)
-
-
-def debug():
-    print("Here")
-    root.after(4000, debug)
+    root.after(500, loop)
 
 
 setup()
-set_up_debug()
-#debug()
+#set_up_debug()
 loop()
 
 # Start GUI main loop
