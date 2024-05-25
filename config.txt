@@ -1,8 +1,8 @@
-Level time in minutes: 16
+Level time in minutes: 1
 Level 1 BB: 20
-Level 1 ante: 20
+Level 1 ante: 40
 Level 2 BB: 40
-Level 2 ante: 40
+Level 2 ante: 100
 Level 3 BB: 60
 Level 3 ante: 60
 Level 4 BB: 100
