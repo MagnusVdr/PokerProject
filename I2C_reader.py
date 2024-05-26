@@ -25,10 +25,6 @@ START_TIME = 1
 PAUSE_TIME = 2
 SET_NEW_TIMER_TIME = 3
 """"""""""""""""""""""""
-"""Node Macros"""
-DRAW = 1
-DELE = 2
-""""""""""""""""""""""""
 
 
 def update_player_node_win_chance(bus, player, win_chance):

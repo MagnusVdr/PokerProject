@@ -27,6 +27,7 @@ def update_win_chance():
     not_folded_players = []
     hands = []
     folded_hands = []
+
     for player in players:
         if player.hand[0] == 0 or player.hand[1] == 0:
             continue
@@ -67,7 +68,6 @@ def simulate_players():
 
 def initialize_players(devices):
     if not is_linux:
-        # simulate_community(community)
         return
     for i in devices:
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
@@ -80,28 +80,7 @@ def initialize_players(devices):
 def update_poker_info(time):
     global poker_info_label
     poker_info_label.config(
-        text=f"Level: {poker_game.level} | BB: {poker_game.current_bb()} | Ante: {poker_game.current_bb()} | Time: {time}")
-
-
-def update_timer():
-    if poker_game.timer_running:
-        if poker_game.timer_seconds > 0:
-            poker_game.timer_seconds -= 1
-        elif poker_game.timer_minutes > 0:
-            poker_game.timer_minutes -= 1
-            poker_game.timer_seconds = 59
-        else:
-            if poker_game.all_folded == 1 and poker_game.level < 9:
-                poker_game.level += 1
-                poker_game.timer_minutes = poker_game.level_length
-                update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, poker_game.timer_minutes)
-                update_player_node_timers(bus, players, START_TIME)
-                update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
-            else:
-                poker_game.timer_running = False
-        time_str = f"{poker_game.timer_minutes:02d}:{poker_game.timer_seconds:02d}"
-        update_poker_info(time_str)
-    root.after(1000, update_timer)
+        text=f"Level: {poker_game.level + 1} | BB: {poker_game.current_bb()} | Ante: {poker_game.current_bb()} | Time: {time}")
 
 
 def start_timer():
@@ -144,6 +123,9 @@ def create_gui():
     config_button = Button(root, text="Open Config Window", command=open_config_window, width=20, height=3)
     config_button.place(x=0, y=0)
 
+    rename_button = Button(root, text="Rename players", command=rename_players_window, width=20, height=3)
+    rename_button.place(x=140, y=0)
+
     # Label for BB, ante, timer
     global poker_info_label
     poker_info_label = Label(root,
@@ -163,6 +145,29 @@ def create_gui():
 
     all_in_button = Button(root, text="All in", command=all_in_activate)
     all_in_button.place(x=0, y=200)
+
+
+def rename_players_window():
+    name_entries = []
+
+    rename_window = Toplevel(root)
+    rename_window.title("Rename players")
+
+    i = 0
+    for player in players:
+        Label(rename_window, text=f"{player.name}").grid(row=i, column=0)
+        entry = Entry(rename_window)
+        entry.grid(row=i, column=1)
+        entry.insert(0, player.name)
+        name_entries.append(entry)
+        i += 1
+
+    Button(rename_window, text="Save", command=lambda: save_rename_players(name_entries)).grid(row=i, columnspan=1)
+
+
+def save_rename_players(name_entries):
+    for i in range(len(players)):
+        players[i].update_player_info(name=name_entries[i].get())
 
 
 def open_config_window():
@@ -258,6 +263,36 @@ def set_up_community():
     community.place_widgets()
 
 
+def update_timer():
+    if poker_game.timer_running:
+        if poker_game.timer_seconds > 0:
+            poker_game.timer_seconds -= 1
+        elif poker_game.timer_minutes > 0:
+            poker_game.timer_minutes -= 1
+            poker_game.timer_seconds = 59
+        elif poker_game.all_folded == 1 and poker_game.level < 9:
+            poker_game.level += 1
+            poker_game.timer_minutes = poker_game.level_length
+            update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, poker_game.timer_minutes)
+            update_player_node_timers(bus, players, START_TIME)
+            update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
+        else:
+            poker_game.timer_running = False
+        time_str = f"{poker_game.timer_minutes:02d}:{poker_game.timer_seconds:02d}"
+        update_poker_info(time_str)
+    root.after(1000, update_timer)
+
+
+def loop():
+    if poker_game.game_running:
+        read_i2c(bus, players)
+        read_i2c_community(bus, community)
+        keep_game_state(players, community, bus)
+        update_win_chance()
+
+    root.after(1000, loop)
+
+
 if is_linux:
     try:
         bus = SMBus(1)
@@ -276,31 +311,20 @@ players = []
 community = None
 last_win_chances = []
 
-
-def setup():
-    devices = scan_i2c_devices(bus)
-    read_config()
-    create_gui()
-    initialize_players(devices)
-    # simulate players not in actual project, only for demo
-    simulate_players()
-    update_timer()
-    set_up_community()
-
-
-def loop():
-    if poker_game.game_running:
-        read_i2c(bus, players)
-        read_i2c_community(bus, community)
-        keep_game_state(players, community, bus)
-        update_win_chance()
-
-    root.after(1000, loop)
-
-
-setup()
+'''Set up'''
+devices = scan_i2c_devices(bus)
+read_config()
+create_gui()
+initialize_players(devices)
+# simulate players not in actual project, only for demo
+simulate_players()
+set_up_community()
+''''''''''''''''''
 set_up_debug()
-loop()
 
+'''Main threads'''
+update_timer()
+loop()
+''''''''''''''''''
 # Start GUI main loop
 root.mainloop()

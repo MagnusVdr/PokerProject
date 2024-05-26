@@ -39,9 +39,9 @@ def calculate_win_percentages(player_hands, community_cards, folded_hands):
 
     player_outs = [set() for _ in range(len(player_hands))]
 
+    '''Actual calculation starts here'''
     numb_of_iterations = 0
     if len(community_cards_treys) == 3:
-        pass
         for card1 in remaining_deck:
             for card2 in remaining_deck:
                 if card1 == card2:
@@ -73,7 +73,6 @@ def calculate_win_percentages(player_hands, community_cards, folded_hands):
         for card in remaining_deck:
 
             full_community = community_cards_treys + [card]
-
             scores = []
             for hand in player_hands_treys:
                 score = evaluator.evaluate(full_community, hand)
