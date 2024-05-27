@@ -117,9 +117,9 @@ def read_i2c(bus, players):
 def write_community(bus, community, cmd):
     data_send = []
     if cmd == 2:
-        data_send = [cmd, 2]
+        data_send = [0, cmd, 2]
     elif cmd == 1:
-        data_send = [cmd, 1]
+        data_send = [0, cmd, 1]
     else:
         print("Unknown command")
     try:
