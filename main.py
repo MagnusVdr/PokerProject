@@ -317,6 +317,7 @@ last_win_chances = []
 
 '''Set up'''
 devices = scan_i2c_devices(bus)
+print(devices)
 read_config()
 create_gui()
 players = initialize_players(devices)
