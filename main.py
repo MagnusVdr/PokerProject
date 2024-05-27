@@ -290,7 +290,7 @@ def update_timer():
 
 def main_loop(community):
     if poker_game.game_running:
-        print(community.current_ante())
+        print(poker_game.current_ante())
         read_i2c(bus, players)
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
