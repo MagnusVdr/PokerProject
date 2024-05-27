@@ -77,7 +77,8 @@ def read_i2c_community(bus, community):
                                 data_received[3], data_received[4], data_received[5]])
 
     except OSError as e:
-        simulate_community(community)
+        pass
+        # simulate_community(community)
         # print(f"Error reading from I2C device at address {community.address}: {e}")
 
 
