@@ -69,14 +69,16 @@ def simulate_players():
 
 
 def initialize_players(devices):
+    players = []
     if not is_linux:
-        return
+        return players
     for i in devices:
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
                         cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9], cords[i][10],
                         cords[i][11])
         player.place_widgets()
         players.append(player)
+    return players
 
 
 def update_poker_info(time):
@@ -260,10 +262,10 @@ def keep_game_state(players, community, bus):
 
 
 def set_up_community():
-    global community
     community = Community(85, root, CMYC1_x, CMYC1_y, CMYC2_x, CMYC2_y, CMYC3_x, CMYC3_y, CMYC4_x, CMYC4_y, CMYC5_x,
                           CMYC5_y)
     community.place_widgets()
+    return community
 
 
 def update_timer():
@@ -286,14 +288,15 @@ def update_timer():
     root.after(1000, update_timer)
 
 
-def loop():
+def main_loop(community):
     if poker_game.game_running:
+        print(community.current_ante())
         read_i2c(bus, players)
         read_i2c_community(bus, community)
         keep_game_state(players, community, bus)
         update_win_chance()
 
-    root.after(1000, loop)
+    root.after(1000, lambda: main_loop(community))
 
 
 if is_linux:
@@ -310,24 +313,22 @@ screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
 poker_game = GameState()
-players = []
-community = None
 last_win_chances = []
 
 '''Set up'''
 devices = scan_i2c_devices(bus)
 read_config()
 create_gui()
-initialize_players(devices)
+players = initialize_players(devices)
 # simulate players not in actual project, only for demo
-simulate_players()
-set_up_community()
+# simulate_players()
+community = set_up_community()
 ''''''''''''''''''
 set_up_debug()
 
 '''Main threads'''
 update_timer()
-loop()
+main_loop(community)
 ''''''''''''''''''
 # Start GUI main loop
 root.mainloop()
