@@ -58,6 +58,8 @@ def update_win_chance():
 
 def simulate_players():
     for i in range(1, 10):
+        if i == 4 or i == 8 or i == 6:
+            continue
         player = Player(player_addresses[i], root, i + 1, cords[i][0], cords[i][1], cords[i][2], cords[i][3],
                         cords[i][4], cords[i][5], cords[i][6], cords[i][7], cords[i][8], cords[i][9], cords[i][10],
                         cords[i][11])
@@ -90,6 +92,7 @@ def start_timer():
     update_player_node_timers(bus, players, SET_NEW_TIMER_TIME, new_time=poker_game.level_length)
     update_player_node_timers(bus, players, START_TIME)
     update_player_bb_ante(bus, players, poker_game.current_bb(), poker_game.current_ante())
+    write_community(bus, community, 1)
 
 
 def pause_timer():
