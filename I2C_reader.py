@@ -105,7 +105,7 @@ def read_i2c(bus, players):
         return
     for player in players:
         try:
-            data_received = bus.read_i2c_block_data(player.address, 6, 6)
+            data_received = bus.read_i2c_block_data(player.address, 0, 6)
             #print(f"read players data:\n{data_received}")
             player.update_player_info(hand=[data_received[1], data_received[2]], folded=data_received[3],
                                       stack=(data_received[4] << 8) | data_received[5])
