@@ -85,18 +85,13 @@ def read_i2c_community(bus, community):
 def scan_i2c_devices(bus):
     connected_devices = []
     if not is_linux:
-        return
+        return connected_devices
     for i in range(10):
         try:
             bus.read_byte(player_addresses[i])
             connected_devices.append(i)
         except IOError:
             pass
-
-    try:
-        pass
-    except IOError:
-        pass
     return connected_devices
 
 
