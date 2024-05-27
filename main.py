@@ -322,7 +322,7 @@ read_config()
 create_gui()
 players = initialize_players(devices)
 # simulate players not in actual project, only for demo
-# simulate_players()
+simulate_players()
 community = set_up_community()
 ''''''''''''''''''
 set_up_debug()
